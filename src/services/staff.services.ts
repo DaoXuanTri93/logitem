@@ -4,6 +4,7 @@ import { UserDTO } from "src/users/users.dto";
 import { Users } from "src/models/users.entity";
 import { Repository } from "typeorm";
 import { Staff } from "src/models/staff.entity";
+import { StaffUsersDTO } from "src/dto/staffuser.dto";
 
 @Injectable()
 export class StaffServices {
@@ -31,12 +32,12 @@ export class StaffServices {
         await this.staffRepository.delete(id);
     }
 
-     createUser(res:any) {
+     createStaff(res:any) {
         const staff = this.staffRepository.create(res);
         return this.staffRepository.save(staff)
       }
 
-    //  async updateUserbyid(id:string,res:UserDTO) {
+    //  async updateStaffbyid(id:string, res:StaffUsersDTO) {
     //         const user = await this.staffRepository.update(id,res);
     //         return user
     //   }
