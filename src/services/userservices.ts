@@ -28,7 +28,6 @@ export class UserServices {
 
      createUser(res:any) {
         const user = this.usersRepository.create(res);
-        console.log('ok')
         return this.usersRepository.save(user)
       }
 
