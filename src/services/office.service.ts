@@ -18,8 +18,8 @@ export class OfficeService {
         return this.officeRepository.findOneBy({ officeId });
     }
 
-    findOneByIdUser(officeId: string) {
-        return this.officeRepository.findOneBy({officeId});
+    findOneByIdStaff(listStaff: any) {
+        return this.officeRepository.findOneBy({listStaff});
     }
 
     async remove(officeId: string) {
