@@ -8,8 +8,8 @@ export class StaffController {
     constructor(readonly staffServices : StaffServices) { }   
      
     @Get()
-        getAllStaff(): void {
-                this.staffServices.findAll()
+        getAllStaff() {
+               return this.staffServices.findAll()
         }
         
     @Post()

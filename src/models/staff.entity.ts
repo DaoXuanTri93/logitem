@@ -2,13 +2,14 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGene
 import { Office } from "./office.entity"
 import { Users } from "./users.entity"
 import { StampApproval } from "./stampApproval.entity"
+import { TimeKeeping } from "./timekeeping.entity"
 
 @Entity()
 export class Staff {
     @PrimaryGeneratedColumn()
     staffId: string
 
-    @OneToOne(() => Users, (userAccount) => userAccount.staff)
+    @OneToOne(() => Users, (userAccount) => userAccount.staff,{eager: true})
     @JoinColumn()
     userAccount: Users
 
@@ -36,14 +37,13 @@ export class Staff {
     @Column({ nullable: true })
     macAddress: string
 
-    @ManyToOne(() => Office, (office) => office.listStaff)
+    @ManyToOne(() => Office, (office) => office.listStaff,{eager: true})
     @JoinColumn()
     affiliatedOffice: Office
 
     @OneToMany(()=> StampApproval, (stampApproval) => stampApproval.staff)
-    stampApproval: string // enum
+    stampApproval: StampApproval 
 
-    @OneToMany(()=> StampApproval, (timeKeeping) => timeKeeping.staff)
-    timeKeeping: string // enum
-
+    @OneToMany(()=> TimeKeeping, (timeKeeping) => timeKeeping.staff)
+    timeKeeping: TimeKeeping 
 }

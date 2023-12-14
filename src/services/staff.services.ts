@@ -1,10 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserDTO } from "src/users/users.dto";
-import { Users } from "src/models/users.entity";
 import { Repository } from "typeorm";
 import { Staff } from "src/models/staff.entity";
-import { StaffUsersDTO } from "src/dto/staffuser.dto";
+
 
 @Injectable()
 export class StaffServices {
@@ -37,13 +35,4 @@ export class StaffServices {
         return this.staffRepository.save(staff)
       }
 
-    //  async updateStaffbyid(id:string, res:StaffUsersDTO) {
-    //         const user = await this.staffRepository.update(id,res);
-    //         return user
-    //   }
-
-    //   async updateUser(res:Users) {
-    //         const user = await this.staffRepository.save(res);
-    //         return user
-    //   }
 }
