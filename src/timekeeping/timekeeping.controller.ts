@@ -1,5 +1,4 @@
 import { Body, Controller, Get,HttpException,HttpStatus,Request, UseGuards } from "@nestjs/common";
-import { log } from "console";
 import { AuthGuard } from "src/auth/authGuard";
 import { OfficeService } from "src/services/office.service";
 import { StaffServices } from "src/services/staff.services";

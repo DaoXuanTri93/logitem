@@ -1,15 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserDTO } from "src/users/users.dto";
-import { Users } from "src/models/users.entity";
 import { Repository } from "typeorm";
 import { Staff } from "src/models/staff.entity";
+import { UserServices } from "./userservices";
+import { OfficeService } from "./office.service";
 
 @Injectable()
 export class StaffServices {
     constructor(
         @InjectRepository(Staff)
-        private staffRepository: Repository<Staff>,
+        private staffRepository: Repository<Staff>, readonly userServices: UserServices, readonly officeServices: OfficeService
     ) { }
 
     findAll() {
@@ -31,8 +31,24 @@ export class StaffServices {
         await this.staffRepository.delete(id);
     }
 
-     createUser(res:any) {
-        const staff = this.staffRepository.create(res);
+     async createUser(res:any,req:any) {
+
+        let staff = new Staff()
+        let id = req.user.id
+        let user = await this.userServices.findOne(id)
+        let office = await this.officeServices.findOne(res.affiliatedOffice)
+        
+        staff.userAccount = user
+        staff.userName = res.userName
+        staff.email = res.email
+        staff.telephone = res.telephone
+        staff.dateOfBirth = res.dateOfBirth
+        staff.drivingLicenseNumber = res.drivingLicenseNumber
+        staff.area = res.area
+        staff.businessTrip = res.businessTrip
+        staff.macAddress = res.macAddress
+        staff.affiliatedOffice = office
+        staff = this.staffRepository.create(staff);
         return this.staffRepository.save(staff)
       }
 

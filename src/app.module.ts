@@ -17,10 +17,10 @@ import { StaffModule } from './staff/staff.module';
     StaffModule,
     TypeOrmModule.forRoot({
       type: 'mssql',
-      host: 'HVLUYN1-PC',
+      host: 'PDGIAU-PC',
       port: 1433,
       username: 'sa',
-      password: '123456a@',
+      password: '@pdg1234567',
       database: 'nestjs',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
