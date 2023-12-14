@@ -1,14 +1,15 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 import { Staff } from "./staff.entity"
+import { TimeKeepingDTO } from "src/timekeeping/timekeeping.dto"
 
 @Entity()
 export class TimeKeeping {
     @PrimaryGeneratedColumn()
     id : string
 
-    @ManyToOne(() => Staff, (staff) => staff.timeKeeping)
+    @ManyToOne(() => Staff, (staff) => staff.timeKeeping,{eager: true})
     @JoinColumn()
-    staff: string
+    staff: Staff
 
     @Column()
     userName: string
@@ -28,6 +29,13 @@ export class TimeKeeping {
     @Column({nullable: true})
     workOutside: string
 
-    @Column()
+    @Column({unique:true})
     dayTimeKeeping: String
+
+    convertTimeKeepingToDTO():TimeKeepingDTO{
+        let timeKeepingDTO = new TimeKeepingDTO();
+        timeKeepingDTO.timeStartDay = this.timeStartDay
+        timeKeepingDTO.timeEndDay = this.timeEndDay
+        return timeKeepingDTO
+    }
 }

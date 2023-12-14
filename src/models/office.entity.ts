@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Staff } from "./staff.entity"
+import { OfficeDTO } from "src/office/office.dto"
 
 @Entity()
 export class Office{
@@ -46,5 +47,10 @@ export class Office{
     @OneToMany(() => Staff, (listStaff) => listStaff.affiliatedOffice)
     listStaff?: Staff[]
 
-
+    convertOfficeToDTO():OfficeDTO{
+        let officeDTO = new OfficeDTO();
+        officeDTO.officeId = this.officeId
+        officeDTO.coordinate = this.coordinate
+        return officeDTO
+    }
 }

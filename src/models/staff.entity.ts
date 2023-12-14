@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGene
 import { Office } from "./office.entity"
 import { Users } from "./users.entity"
 import { StampApproval } from "./stampApproval.entity"
+import { TimeKeeping } from "./timekeeping.entity"
 
 @Entity()
 export class Staff {
@@ -41,9 +42,9 @@ export class Staff {
     affiliatedOffice: Office
 
     @OneToMany(()=> StampApproval, (stampApproval) => stampApproval.staff)
-    stampApproval: string // enum
+    stampApproval: string 
 
     @OneToMany(()=> StampApproval, (timeKeeping) => timeKeeping.staff)
-    timeKeeping: string // enum
+    timeKeeping: TimeKeeping 
 
 }

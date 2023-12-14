@@ -1,10 +1,9 @@
-import { Body, Controller, Get,HttpException,HttpStatus,Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get,HttpException,HttpStatus,Post,Request, UseGuards } from "@nestjs/common";
 import { log } from "console";
 import { AuthGuard } from "src/auth/authGuard";
 import { OfficeService } from "src/services/office.service";
 import { StaffServices } from "src/services/staff.services";
 import { TimekeepingServices } from "src/services/timekeeping.service";
-import { UserServices } from "src/services/userservices";
 
 @Controller('timekeeping')
 export class TimekeepingController {
@@ -13,20 +12,32 @@ export class TimekeepingController {
     @UseGuards(AuthGuard)
     @Get()
     async getdataTimeKeepingToDay(@Request() req) {
-        let date = new Date().toJSON().slice(0, 10);
-        console.log(date);
+        let datetime =new Date(Date.now())
+        let date = datetime.toLocaleDateString();
         let id = req.user.id;
-        let staff = await this.staffServices.findOneByIdUser(id);
-      
-        if(staff == null){
-            throw new HttpException("Lỗi",HttpStatus.BAD_REQUEST)
-        }
-        let office =await this.officeService.findOneByIdStaff(staff.staffId)
-        console.log(office);
+        console.log(id);
         
+        let staff = await this.staffServices.findOneByIdUser(id)
+        if(staff == null){
+            throw new HttpException("Tài khoản chưa được xác thực nhân viên",HttpStatus.BAD_REQUEST)
+        }
         let staffName = staff.userName
         let timekeep = await this.timeKeepingServices.findOneByUserName(staffName,date)
-        return timekeep
+        
+        return timekeep.convertTimeKeepingToDTO()
+    }
+
+    @UseGuards(AuthGuard)
+    @Post("checkin")
+    async checkIn(@Request() req) {
+       return this.timeKeepingServices.checkIn(req)
+    }
+
+
+    @UseGuards(AuthGuard)
+    @Post("checkout")
+    async checkOut(@Request() req) {
+       return this.timeKeepingServices.checkOut(req)
     }
 
 }
