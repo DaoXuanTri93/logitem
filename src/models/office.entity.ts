@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Staff } from "./staff.entity"
+import { OfficeUserDTO } from "src/office/office.dto"
 
 @Entity()
 export class Office{
@@ -47,4 +48,11 @@ export class Office{
     listStaff?: Staff[]
 
 
+    converOfficeToDTO(): OfficeUserDTO{
+        let officeUsersDTO = new OfficeUserDTO() ;
+        
+        officeUsersDTO.id = this.officeId
+        officeUsersDTO.baseName = this.baseName
+         return officeUsersDTO
+     }
 }

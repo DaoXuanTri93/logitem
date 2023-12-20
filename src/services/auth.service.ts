@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Res, UnauthorizedException } from '@nestjs/common';
-import { UserServices } from './userservices';
+import { UserServices } from './user.service';
 import { JwtService } from '@nestjs/jwt';
 import { Users } from 'src/models/users.entity';
 

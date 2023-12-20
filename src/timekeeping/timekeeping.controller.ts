@@ -1,6 +1,6 @@
 import { Body, Controller, Get,HttpException,HttpStatus,Request, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "src/auth/authGuard";
-import { StaffServices } from "src/services/staff.services";
+import { StaffServices } from "src/services/staff.service";
 import { TimekeepingServices } from "src/services/timekeeping.service";
 
 @Controller('timekeeping')

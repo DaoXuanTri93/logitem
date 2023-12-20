@@ -3,6 +3,7 @@ import { Office } from "./office.entity"
 import { Users } from "./users.entity"
 import { StampApproval } from "./stampApproval.entity"
 import { TimeKeeping } from "./timekeeping.entity"
+import { StaffUsersDTO } from "src/staff/staffuser.dto"
 
 @Entity()
 export class Staff {
@@ -46,4 +47,19 @@ export class Staff {
 
     @OneToMany(()=> TimeKeeping, (timeKeeping) => timeKeeping.staff)
     timeKeeping: TimeKeeping 
+
+    converStaffToDTO(): StaffUsersDTO{
+        let staffUsersDTO = new StaffUsersDTO()
+
+
+        staffUsersDTO.id = this.staffId
+        staffUsersDTO.userAccount = this.userAccount.username
+        staffUsersDTO.userName = this.userName
+        staffUsersDTO.email = this.email
+        staffUsersDTO.telephone = this.telephone
+        staffUsersDTO.affiliatedOffice = this.affiliatedOffice.baseName
+        staffUsersDTO.role = this.userAccount.role
+        staffUsersDTO.MAC = this.userAccount.MAC
+         return staffUsersDTO
+     }
 }
