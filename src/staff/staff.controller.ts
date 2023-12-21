@@ -2,11 +2,16 @@ import { Body, Controller, Get, Param, Post, Put, UseGuards } from "@nestjs/comm
 import { StaffUsersDTO } from "src/staff/staffuser.dto";
 import { StaffServices } from "src/services/staff.service";
 import { Staff } from "src/models/staff.entity";
+import { UserServices } from "src/services/user.service";
+import { Users } from "src/models/users.entity";
+import { Office } from "src/models/office.entity";
+import { OfficeServices } from "src/services/office.service";
 
 @Controller('staff')
 export class StaffController {
 
-    constructor(readonly staffServices : StaffServices) { }   
+    constructor(readonly staffServices : StaffServices ,readonly userServices : UserServices , readonly officeServices : OfficeServices) { }
+    
        
     @Get()
         async getAllStaff(): Promise<StaffUsersDTO[]>{           
@@ -17,12 +22,23 @@ export class StaffController {
     @Post()
         createStaff(@Body() res:StaffUsersDTO ){
             let staff = new Staff();
-            staff.staffId = res.id
-            this.staffServices.findOneByIdUser(res.userAccount).then((e) => e.userAccount = staff.userAccount )
+            let user = new Users();
+            let office = new Office();
+
+            user.username = res.userAccount
+            user.MAC = res.MAC
+            user.role = res.role
+            user.password = '123456'
+            this.userServices.createUser(user)
+
+            staff.userAccount= user
             staff.userName = res.userName
             staff.email = res.email
             staff.telephone = res.telephone
-            this.staffServices.findOneByIdAffiliatedOffice(res.affiliatedOffice).then((e)=> e.affiliatedOffice = staff.affiliatedOffice)
+
+            this.officeServices.findOfficeByBaseName(res.affiliatedOffice).then((e) => e.map((e) => e = office))
+            
+            staff.affiliatedOffice = office
                 return this.staffServices.createStaff(staff)
         }
 
