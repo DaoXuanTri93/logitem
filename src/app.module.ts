@@ -9,19 +9,24 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/constant';
 import { TimeKeepingModule } from './timekeeping/timekeeping.module';
 import { StaffModule } from './staff/staff.module';
+import { EnterDistanceModule } from './EnterDistance/enterDistance.module';
+import { StampApprovalModule } from './stampApproval/stampApproval.module';
+
 
 @Module({
   imports: [
     UserModule,
     TimeKeepingModule,
     StaffModule,
+    EnterDistanceModule,
+    StampApprovalModule,
     TypeOrmModule.forRoot({
       type: 'mssql',
-      host: 'HVLUYN1-PC',
+      host: 'DXTRI-PC\\XUANTRI',
       port: 1433,
       username: 'sa',
-      password: '123456a@',
-      database: 'nestjs',
+      password: 'Stdpcmtldgcd1@',
+      database: 'logitem',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
       extra: {

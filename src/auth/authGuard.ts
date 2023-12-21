@@ -12,8 +12,11 @@ import { Request } from 'express';
 export class AuthGuard implements CanActivate {
     constructor(private jwtService: JwtService) { }
     async canActivate(context: ExecutionContext): Promise<boolean> {
+    
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
+
+        console.log("token here");
         try {
             // const cookie = request.cookies['jwt']
             const data = await this.jwtService.verifyAsync(token,

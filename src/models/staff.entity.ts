@@ -41,9 +41,9 @@ export class Staff {
     affiliatedOffice: Office
 
     @OneToMany(()=> StampApproval, (stampApproval) => stampApproval.staff)
-    stampApproval: string // enum
+    stampApproval: StampApproval // enum
 
     @OneToMany(()=> StampApproval, (timeKeeping) => timeKeeping.staff)
-    timeKeeping: string // enum
+    timeKeeping: Staff // enum
 
 }
