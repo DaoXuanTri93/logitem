@@ -10,7 +10,9 @@ import { OfficeServices } from "src/services/office.service";
 @Controller('staff')
 export class StaffController {
 
-    constructor(readonly staffServices : StaffServices ,readonly userServices : UserServices , readonly officeServices : OfficeServices) { }
+    constructor(readonly staffServices : StaffServices ,
+        readonly userServices : UserServices , 
+        readonly officeServices : OfficeServices) { }
     
        
     @Get()
