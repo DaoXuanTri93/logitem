@@ -21,7 +21,7 @@ import { StaffModule } from './staff/staff.module';
       port: 1433,
       username: 'sa',
       password: '@pdg1234567',
-      database: 'nestjs',
+      database: 'logitem',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
       extra: {

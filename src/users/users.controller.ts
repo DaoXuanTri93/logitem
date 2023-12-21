@@ -6,8 +6,8 @@ import { UserServices } from "src/services/userservices";
 export class UserController {
         constructor(readonly userServices: UserServices) { }
         @Get()
-        getAllUser(): void {
-                this.userServices.findAll()
+        getAllUser() {
+                return this.userServices.findAll()
         }
         @Post()
         createUser(@Body() res:any ){

@@ -7,12 +7,14 @@ export class StaffController {
         constructor(readonly staffServices: StaffServices) { }
         
         @Get()
-        getAllUser(): void {
-                this.staffServices.findAll()
+         async getAllUser() {
+                let data = await this.staffServices.findAll()
+               return data.map((e)=> e.convertStaffDTO())
+        // return data;
         }
-        @UseGuards(AuthGuard)
-        @Post()
-        createUser(@Body() res:any ,@Request() req){
-                return this.staffServices.createUser(res,req)
-        }
+        // @UseGuards(AuthGuard)
+        // @Post()
+        // createUser(@Body() res:any ,@Request() req){
+        //         return this.staffServices.createUser(res,req)
+        // }
 }

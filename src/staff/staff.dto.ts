@@ -1,12 +1,12 @@
 export class StaffDTO {
-  userAccount: string;
-  userName: string;
-  email: string;
-  telephone: string;
-  dateOfBirth: string;
-  drivingLicenseNumber: string;
-  area: string;
-  businessTrip: string;
-  macAddress: string;
   affiliatedOffice: string;
+  userName: string;
+  date: string;
+  area: string;
+  clockInTime: string;
+  clockOutTime: string;
+  overtimeClockInTime: string;
+  overtimeClockOutTime: string;
+  businessTrip: string
+  distance: string;
 }

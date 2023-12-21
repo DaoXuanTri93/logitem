@@ -14,10 +14,10 @@ import { jwtConstants } from "src/auth/constant";
       OfficeModule,
       UserModule,
       TypeOrmModule.forFeature([Staff]),
-      JwtModule.register({
-        secret: jwtConstants.secret,
-        signOptions: { expiresIn: '1d' },
-      })
+      // JwtModule.register({
+      //   secret: jwtConstants.secret,
+      //   signOptions: { expiresIn: '1d' },
+      // })
     ],
     controllers: [StaffController],
     providers: [StaffServices],

@@ -1,6 +1,5 @@
+import { Staff } from 'src/models/staff.entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
-import { Staff } from "./staff.entity"
-
 @Entity()
 export class TimeKeeping {
     @PrimaryGeneratedColumn()
@@ -8,7 +7,7 @@ export class TimeKeeping {
 
     @ManyToOne(() => Staff, (staff) => staff.timeKeeping)
     @JoinColumn()
-    staff: string
+    staff: Staff
 
     @Column()
     userName: string
@@ -29,5 +28,5 @@ export class TimeKeeping {
     workOutside: string
 
     @Column()
-    dayTimeKeeping: String
+    dayTimeKeeping: string
 }
