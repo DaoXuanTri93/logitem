@@ -9,12 +9,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/constant';
 import { TimeKeepingModule } from './timekeeping/timekeeping.module';
 import { StaffModule } from './staff/staff.module';
+import { MissionModule } from './mission/mission.module';
 
 @Module({
   imports: [
     UserModule,
     TimeKeepingModule,
     StaffModule,
+    MissionModule,
     TypeOrmModule.forRoot({
       type: 'mssql',
       host: 'HVLUYN1-PC',

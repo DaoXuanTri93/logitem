@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { TimeKeeping } from "src/models/timekeeping.entity";
-import { TimekeepingController } from "./timekeeping.controller";
 import { TimekeepingServices } from "src/services/timekeeping.service";
 import { StaffModule } from "src/staff/staff.module";
 import { AuthModule } from "src/auth/auth.module";
@@ -10,22 +9,23 @@ import { jwtConstants } from "src/auth/constant";
 import { UserModule } from "src/users/users.module";
 import { OfficeModule } from "src/office/office.module";
 import { MissionRegistation } from "src/models/mission-registation.entity";
-import { MissionModule } from "src/mission/mission.module";
+import { MissionServices } from "src/services/mission.service";
+import { MissionController } from "./mission.controller";
+import { LogMissionModule } from "src/logmission/mission.module";
 
 
 @Module({
     imports:[
-        TypeOrmModule.forFeature([TimeKeeping]),
+        TypeOrmModule.forFeature([MissionRegistation]),
         StaffModule,
-        OfficeModule,
-        MissionModule,
+        LogMissionModule,
         JwtModule.register({
           secret: jwtConstants.secret,
           signOptions: { expiresIn: '1d' },
         })
     ],
-    controllers: [TimekeepingController],
-    providers: [TimekeepingServices],
-    exports: [TimekeepingServices],
+    controllers: [MissionController],
+    providers: [MissionServices],
+    exports: [MissionServices],
   })
-export class TimeKeepingModule{}
+export class MissionModule{}

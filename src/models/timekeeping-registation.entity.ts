@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 import { Staff } from "./staff.entity"
-import { TimeKeepingDTO } from "src/timekeeping/timekeeping.dto"
+import { BaseEntity } from "./base"
 
 @Entity()
-export class TimeKeeping {
+export class TimekeepingRegistation extends BaseEntity{
     @PrimaryGeneratedColumn()
     id : string
 
@@ -31,11 +31,4 @@ export class TimeKeeping {
 
     @Column({unique:true})
     dayTimeKeeping: String
-
-    convertTimeKeepingToDTO():TimeKeepingDTO{
-        let timeKeepingDTO = new TimeKeepingDTO();
-        timeKeepingDTO.timeStartDay = this.timeStartDay
-        timeKeepingDTO.timeEndDay = this.timeEndDay
-        return timeKeepingDTO
-    }
 }

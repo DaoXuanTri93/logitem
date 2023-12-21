@@ -1,5 +1,6 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Staff } from "./staff.entity";
+import { Role } from "src/enum/role.enum";
 
 @Entity()
 export class Users {
@@ -13,7 +14,7 @@ export class Users {
   password: string;
 
   @Column({nullable: true})
-  role: string;
+  role: Role;
 
   @Column({nullable: true})
   MAC: string;
