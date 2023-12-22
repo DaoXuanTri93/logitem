@@ -18,18 +18,17 @@ export class UserServices {
     findOne(id: string) {
         return this.usersRepository.findOneBy({ id });
     }
-    findOneByUserName(username: string) {
-        return this.usersRepository.findOneBy({ username });
+   async  findOneByUserName(username : string) {
+        return await this.usersRepository.findOneBy({username});
     }
 
     async remove(id: number) {
         await this.usersRepository.delete(id);
     }
 
-     createUser(res:any) {
+    async createUser(res:any) {
         const user = this.usersRepository.create(res);
-        console.log('ok')
-        return this.usersRepository.save(user)
+        return await this.usersRepository.save(user)
       }
 
      async updateUserbyid(id:string,res:UserDTO) {

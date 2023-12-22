@@ -17,12 +17,8 @@ export class OfficeServices {
         return await this.officeRepository.find();
     }
 
-    async findOfficeByBaseName(name : string) {
-        return await this.officeRepository.find({
-            where : {
-                 baseName : name
-            }
-        });
+    async findOfficeByBaseName(baseName : string) {
+        return await this.officeRepository.findOneBy({baseName});
     }
 
 
