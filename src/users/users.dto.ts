@@ -5,5 +5,6 @@ export class UserDTO {
 
 export class SearchUserDTO{
   id: string
+  username: string
   role: string
 }

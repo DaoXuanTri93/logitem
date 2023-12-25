@@ -23,11 +23,12 @@ export class Users {
   staff?: Staff
 
   converUsersToSearchDTO(): SearchUserDTO{
-    let searchUserDTo =new SearchUserDTO();
+    let searchUserDTO =new SearchUserDTO();
 
-    searchUserDTo.id = this.id
-    searchUserDTo.role = this.role 
+    searchUserDTO.id = this.id
+    searchUserDTO.role = this.role 
+    searchUserDTO.username = this.username
 
-    return searchUserDTo
+    return searchUserDTO
   }
 }

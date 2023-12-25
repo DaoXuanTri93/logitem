@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Staff } from "src/models/staff.entity";
 import { Office } from "src/models/office.entity";
+import { OfficeUserDTO } from "src/office/office.dto";
 
 
 
@@ -21,5 +21,7 @@ export class OfficeServices {
         return await this.officeRepository.findOneBy({baseName});
     }
 
-
+    async updateOfficeByStaffUser(id: string,res:OfficeUserDTO){
+        return await this.officeRepository.update(id,res)
+    }
 }

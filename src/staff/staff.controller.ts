@@ -5,6 +5,10 @@ import { Staff } from "src/models/staff.entity";
 import { UserServices } from "src/services/user.service";
 import { Users } from "src/models/users.entity";
 import { OfficeServices } from "src/services/office.service";
+import { SearchUserDTO } from "src/users/users.dto";
+import { OfficeUserDTO } from "src/office/office.dto";
+import { Office } from "src/models/office.entity";
+import { log } from "console";
 
 @Controller('staff')
 export class StaffController {
@@ -37,7 +41,6 @@ export class StaffController {
             await this.userServices.createUser(user)
         
            let checkUser = await this.userServices.findOneByUserName(user.username)    
-           console.log(checkUser);
            staff.userAccount = checkUser
 
             staff.userName = res.userName
@@ -56,6 +59,30 @@ export class StaffController {
             let a = await this.staffServices.findOne(id);
 
             return (a.map((e)=> e.converStaffToDTO()))
+        }
+
+    @Put(':id')
+        async updateStaffUser(@Param('id') id : string , @Body()res : StaffUsersDTO){
+            let staff = new Staff();
+            let user = new SearchUserDTO();
+            let office = new Office();
+            
+            staff = await this.staffServices.findOneById(id)
+
+            user.username = res.userAccount 
+            user.role = res.role
+
+            await this.userServices.updateUserbyStaffUser(staff.userAccount.id,user)
+
+            office = await this.officeServices.findOfficeByBaseName(res.affiliatedOffice);
+            
+            return this.staffServices.updateStaffUserById(id,{
+                userName : res.userName,
+                email : res.email,
+                telephone : res.telephone,
+                affiliatedOffice : office
+            });
+            
         }
   
 }

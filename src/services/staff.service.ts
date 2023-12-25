@@ -28,6 +28,10 @@ export class StaffServices {
         return this.staffRepository.findOneBy({userAccount});
     }
 
+    findOneById(staffId: any) {
+        return this.staffRepository.findOneBy({staffId});
+    }
+
     findOneByIdAffiliatedOffice(affiliatedOffice: any) {
         return this.staffRepository.findOneBy({affiliatedOffice});
     }
@@ -40,9 +44,13 @@ export class StaffServices {
         await this.staffRepository.delete(id);
     }
 
-     createStaff(res:any) {
+    createStaff(res:any) {
         const staff = this.staffRepository.create(res);
         return this.staffRepository.save(staff)
-      }
+    }
 
+    async updateStaffUserById(id:string , res:any) {
+        return await this.staffRepository.update(id,res);
+
+    } 
 }
