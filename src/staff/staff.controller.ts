@@ -6,9 +6,8 @@ import { UserServices } from "src/services/user.service";
 import { Users } from "src/models/users.entity";
 import { OfficeServices } from "src/services/office.service";
 import { SearchUserDTO } from "src/users/users.dto";
-import { OfficeUserDTO } from "src/office/office.dto";
 import { Office } from "src/models/office.entity";
-import { log } from "console";
+
 
 @Controller('staff')
 export class StaffController {
@@ -19,17 +18,13 @@ export class StaffController {
     
        
     @Get()
-        async getAllStaff(): Promise<StaffUsersDTO[]>{  
+        async getAllStaff(): Promise<StaffUsersDTO[]>{
 
-           let a = await this.staffServices.findAll();
-
-             return (a.map((e)=> e.converStaffToDTO()));
+             return ((await this.staffServices.findAll()).map((e)=> e.converStaffToDTO()));
         }
         
     @Post()
-       async  createStaff(@Body() res:any ){
-
-            console.log(res);
+       async createStaff(@Body() res:any ){
             
             let staff = new Staff();
             let user = new Users();
@@ -56,9 +51,7 @@ export class StaffController {
     @Get(':id')
         async getDetailStaffUserbyId(@Param('id') id : string){
 
-            let a = await this.staffServices.findOne(id);
-
-            return (a.map((e)=> e.converStaffToDTO()))
+            return ((await this.staffServices.findOne(id)).map((e)=> e.converStaffToDTO()))
         }
 
     @Put(':id')
@@ -82,7 +75,7 @@ export class StaffController {
                 telephone : res.telephone,
                 affiliatedOffice : office
             });
-            
+
         }
   
 }

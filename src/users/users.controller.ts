@@ -11,11 +11,6 @@ export class UserController {
                 this.userServices.findAll()
         }
 
-        @Get('/search')
-        async getAllSearchUser(): Promise<SearchUserDTO[]> {
-                return (await this.userServices.findAll()).map((e)=> e.converUsersToSearchDTO())
-        }
-
         @Post()
         createUser(@Body() res:any ){
                 return this.userServices.createUser(res)
