@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Office } from 'src/models/office.entity';
+import { OfficeDTO } from 'src/office/office.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -18,16 +19,26 @@ export class OfficeService {
         return this.officeRepository.findOneBy({ officeId });
     }
 
+
     findOneByIdStaff(listStaff: any) {
         return this.officeRepository.findOneBy({listStaff});
     }
+    findOneByIdOffice(officeId: string) {
+        return this.officeRepository.findOneBy({ officeId });
+    }
+    
 
     async remove(officeId: string) {
         await this.officeRepository.delete(officeId);
     }
 
-     createUser(res:any) {
+    createOffice(res: any) {
         const office = this.officeRepository.create(res);
         return this.officeRepository.save(office)
-      }
+    }
+    async updateOfficebyid(id:string,res:OfficeDTO) {
+        const offices = await this.officeRepository.update(id,res);
+        console.log(offices);
+        return offices
+  }
 }

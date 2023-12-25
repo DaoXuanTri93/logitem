@@ -2,13 +2,29 @@ import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put ,Req
 import { AuthGuard } from 'src/auth/authGuard';
 import { OfficeService } from 'src/services/office.service';
 import { StaffServices } from 'src/services/staff.services';
+import { OfficeDTO } from './office.dto';
 
 @Controller('office')
 export class OfficeController {
     constructor(readonly officeServices: OfficeService,readonly staffServices: StaffServices) { }
     @Get()
-    getAllOffice() {
-           return this.officeServices.findAll()
+    async getAllOffice() {
+        var data = await this.officeServices.findAll()
+        if (data.length > 0) {
+            var response = data.map((item)=> item.convertOfficeDTO());
+         } else {
+            return data;
+        }
+        return response;
+    }
+    @Post()
+    createOffice(@Body() res: any) {
+        return this.officeServices.createOffice(res)
+    }
+    @Put(':id')
+    updateOffice(@Param('id') id: string, @Body() res: OfficeDTO) {
+        console.log(res);
+        return this.officeServices.updateOfficebyid(id, res)
     }
 
     @UseGuards(AuthGuard)

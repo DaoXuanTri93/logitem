@@ -47,6 +47,7 @@ export class Office{
     @OneToMany(() => Staff, (listStaff) => listStaff.affiliatedOffice)
     listStaff?: Staff[]
 
+
     convertOfficeToDTO():OfficeDTO{
         let officeDTO = new OfficeDTO();
         officeDTO.officeId = this.officeId
@@ -59,5 +60,19 @@ export class Office{
         officeDTO.officeId = this.officeId
         officeDTO.baseName = this.baseName
         return officeDTO
+    }
+    convertOfficeDTO():OfficeDTO{
+        let officedto = new OfficeDTO();
+        officedto.officeId = this.officeId;
+        officedto.baseName = this.baseName;
+        officedto.address = this.address;
+        officedto.telephoneNumber = this.telephoneNumber;
+        officedto.manager = this.baseName;
+        officedto.driverInformation = this.driverInformation;
+        officedto.drivingRoute = this.drivingRoute;
+        officedto.vehicleInformation = this.vehicleInformation;
+        officedto.drivingSchedule = this.drivingSchedule
+        return officedto;
+
     }
 }

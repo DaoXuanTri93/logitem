@@ -1,3 +1,4 @@
+
 import { Office } from "src/models/office.entity"
 
 export class OfficeDTO {
@@ -36,5 +37,8 @@ export class OfficeDTO {
 
     coordinate : string
 
+    engravingRangeRadius: string
+
   }
   
+
