@@ -44,7 +44,7 @@ export class MissionServices {
     }
 
     async checkMission(req: any, data: any) {
-        let id = req.user.id;
+        let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
         let missionRegistation = new MissionRegistation();
         if(data.startDay > data.endDay){

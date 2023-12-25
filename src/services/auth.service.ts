@@ -26,7 +26,9 @@ export class AuthService {
     
     if (signInDto.isWeb) {
       if (user.role != "DRIVER") {
-        const payload = { sub: user.id, username: user.username, password:user.password,MAC:user.MAC};
+        console.log('user.role',user.role);
+        
+        const payload = { sub: user.id, username: user.username, password:user.password,MAC:user.MAC,role:user.role};
         const jwt = await this.jwtService.signAsync(payload);
         response.cookie('jwt', jwt, {httpOnly: true})
         return {jwt} ;

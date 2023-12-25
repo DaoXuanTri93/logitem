@@ -20,8 +20,8 @@ export class StaffServices {
         return this.staffRepository.findOneBy({ staffId });
     }
 
-    findOneByIdUser(userAccount: any) {
-        return this.staffRepository.findOneBy({userAccount});
+   async findOneByIdUser(id: any) {
+        return await this.staffRepository.findOneBy({userAccount: {id:id}});
     }
     findOneByUserName(userName: string) {
         return this.staffRepository.findOneBy({ userName });
@@ -36,13 +36,4 @@ export class StaffServices {
         return this.staffRepository.save(staff)
       }
 
-    //  async updateUserbyid(id:string,res:UserDTO) {
-    //         const user = await this.staffRepository.update(id,res);
-    //         return user
-    //   }
-
-    //   async updateUser(res:Users) {
-    //         const user = await this.staffRepository.save(res);
-    //         return user
-    //   }
 }

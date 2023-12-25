@@ -53,4 +53,11 @@ export class Office{
         officeDTO.coordinate = this.coordinate
         return officeDTO
     }
+
+    convertOfficeByStaffToDTO():OfficeDTO{
+        let officeDTO = new OfficeDTO();
+        officeDTO.officeId = this.officeId
+        officeDTO.baseName = this.baseName
+        return officeDTO
+    }
 }

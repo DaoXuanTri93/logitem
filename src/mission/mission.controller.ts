@@ -11,14 +11,14 @@ export class MissionController {
     constructor(readonly missionServices: MissionServices,readonly staffServices: StaffServices) { }
 
     @UseGuards(AuthGuard)
-    @Post("")
+    @Post()
     async registerMission(@Body() data:any,@Request() req,) {
        return this.missionServices.checkMission(req,data)
     }
 
 
     @UseGuards(AuthGuard)
-    @Get("")
+    @Get()
     async getAllDataMission(@Request() req) {
         let datetime = new Date(Date.now())
         let date = datetime.toLocaleDateString();

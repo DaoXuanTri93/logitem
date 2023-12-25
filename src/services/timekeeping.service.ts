@@ -40,7 +40,7 @@ export class TimekeepingServices {
         let date = datetime.toLocaleDateString();
         let time = datetime.toLocaleTimeString();
 
-        let id = req.user.id;
+        let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
         let mission = await this.missionServices.findAllMissonByUser(staff.userName, date)
         console.log(mission);
@@ -69,7 +69,7 @@ export class TimekeepingServices {
         let date = datetime.toLocaleDateString();
         let time = datetime.toLocaleTimeString();
 
-        let id = req.user.id;
+        let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
 
         let mission = await this.missionServices.findAllMissonByUser(staff.userName, date)
@@ -108,7 +108,7 @@ export class TimekeepingServices {
         let datetime = new Date(Date.now())
         let date = datetime.toLocaleDateString();
         let time = datetime.toLocaleTimeString();
-        let id = req.user.id;
+        let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
         let staffName = staff.userName
         let timekeeping = await this.findOneByUserName(staffName, date)
@@ -144,7 +144,7 @@ export class TimekeepingServices {
         let datetime = new Date(Date.now())
         let date = datetime.toLocaleDateString();
         let time = datetime.toLocaleTimeString();
-        let id = req.user.id;
+        let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
         let staffName = staff.userName
         let timekeeping = await this.findOneByUserName(staffName, date)

@@ -1,6 +1,7 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Staff } from "./staff.entity";
 import { Role } from "src/enum/role.enum";
+import { EnterDistance } from "./enterDistance.entity";
 
 @Entity()
 export class Users {
@@ -21,4 +22,7 @@ export class Users {
 
   @OneToOne(() => Staff, (staff) => staff.userAccount)
   staff?: Staff
+
+  @OneToMany(() => EnterDistance, (busSchedule) => busSchedule.userNameId)
+  busSchedule?: EnterDistance
 }

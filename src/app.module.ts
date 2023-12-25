@@ -11,12 +11,16 @@ import { TimeKeepingModule } from './timekeeping/timekeeping.module';
 import { StaffModule } from './staff/staff.module';
 import { MissionModule } from './mission/mission.module';
 
+import { EnterDistanceModule } from './EnterDistance/enterDistance.module';
+import { StampApprovalModule } from './stampApproval/stampApproval.module';
 @Module({
   imports: [
     UserModule,
     TimeKeepingModule,
     StaffModule,
     MissionModule,
+    EnterDistanceModule,
+    StampApprovalModule,
     TypeOrmModule.forRoot({
       type: 'mssql',
       host: 'HVLUYN1-PC',

@@ -14,8 +14,13 @@ export class AuthorGuard implements CanActivate {
             context.getHandler(),
             context.getClass(),
         ]);
+        console.log('request', request);
+        
         const role_demo = request.user.role;
+        console.log('requiredRoles', requiredRoles);
         if (requiredRoles.includes(role_demo)) {
+            
+            
             return true;
         }
         return false;
