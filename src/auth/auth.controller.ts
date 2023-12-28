@@ -26,5 +26,12 @@ export class AuthController {
       response.clearCookie('jwt');
       return {messeage : " Logout success"}
   }
+
+  @UseGuards(AuthGuard)
+  @Post('changePassword')
+  async changePassword(@Request() req, @Body() body : any){
+    
+    return await this.authService.changePassword(req,body);
+  }
 }
 

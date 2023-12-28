@@ -36,4 +36,8 @@ export class StaffServices {
         return this.staffRepository.save(staff)
       }
 
+      async save(staff: Staff) {
+        await this.staffRepository.save(staff);
+    }
+
 }

@@ -39,8 +39,6 @@ export class StampApprovalController {
     @UseGuards(AuthGuard)
     @Post(':id')
     async approveDataStampApproval(@Param('id') id:string,@Body() data) {
-        console.log(data);
-        console.log(id)
         let stampApproval = await this.stampApprovalService.approveData(id,data)
         return stampApproval
     }

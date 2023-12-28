@@ -3,12 +3,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { And, Repository } from "typeorm";
 import { TimeKeeping } from "src/models/timekeeping.entity";
 import { StaffServices } from "./staff.services";
-import { MissionRegistation } from "src/models/mission-registation.entity";
 import { MissionServices } from "./mission.service";
-import { log } from "console";
+import { Role } from "src/enum/role.enum";
+import { Status } from "src/enum/status.enum";
 
 @Injectable()
 export class TimekeepingServices {
+
     constructor(
         @InjectRepository(TimeKeeping)
         private timeKeepingRepository: Repository<TimeKeeping>,
@@ -18,6 +19,16 @@ export class TimekeepingServices {
 
     findAll() {
         return this.timeKeepingRepository.find();
+    }
+
+    async findAllByDriver() {
+        return await this.timeKeepingRepository.find({where:{staff:{userAccount:{role:Role.Driver}}}});
+    }
+    findAllByDriverAndOffice(officeName:string) {
+        return this.timeKeepingRepository.findBy({staff:{userAccount:{role:Role.Driver},affiliatedOffice:{baseName:officeName}}});
+    }
+    save(timeKeeping :TimeKeeping) {
+        return this.timeKeepingRepository.save(timeKeeping);
     }
 
     findOne(id: string) {
@@ -45,7 +56,7 @@ export class TimekeepingServices {
         let mission = await this.missionServices.findAllMissonByUser(staff.userName, date)
         console.log(mission);
         console.log(data.check);
-        if (mission == null && data.check == false) {
+        if (mission.length == 0 && data.check == false||mission[0].statusMission != Status.APPROVED) {
             throw new HttpException("Bạn đang nằm ngoài phạm vi chấm công ", HttpStatus.BAD_REQUEST)
         }
         let timekeeping = await this.findOneByUserName(staff.userName, date)
@@ -75,7 +86,7 @@ export class TimekeepingServices {
         let mission = await this.missionServices.findAllMissonByUser(staff.userName, date)
         console.log(mission);
         
-        if (mission == null && data.check == false) {
+        if ((mission.length == 0 && data.check == false)||mission[0].statusMission != Status.APPROVED) {
             throw new HttpException("Bạn đang nằm ngoài phạm vi chấm công ", HttpStatus.BAD_REQUEST)
         }
         let staffName = staff.userName
@@ -172,5 +183,39 @@ export class TimekeepingServices {
         timekeeping = await this.timeKeepingRepository.save(timekeeping)
         return { overTimeEnd: timekeeping.overTimeEnd }
 
+    }
+
+    async findAllByStaff(req: any) {
+        let id = req.user.sub;
+        let staff = await this.staffServices.findOneByIdUser(id)
+        
+        if(staff == null){
+            throw new HttpException("Tài khoản chưa được xác thực nhân viên",HttpStatus.BAD_REQUEST)
+        }
+        if (staff.userAccount.role == Role.Admin) {
+            return await this.findAllByDriver();
+        }
+        
+        return await this.findAllByDriverAndOffice(staff.affiliatedOffice.baseName)
+
+    }
+
+    async findDriverById(id: string) {
+        let driver = await this.findOne(id)
+        if(driver == null){
+            throw new HttpException("Không tồn tại tài xế này",HttpStatus.BAD_REQUEST)
+        }   
+        return driver.convertTimeKeepingDriverByIdToDTO()
+
+    }
+
+    async editDriver(id: string,data:any) {
+        let driver = await this.findOne(id)
+        console.log(data);
+        let staff = driver.staff;
+        staff.userName =data.userName
+        staff.dateOfBirth = data.dateOfBirth
+        staff.area =data.area
+        this.staffServices.save(staff)
     }
 }

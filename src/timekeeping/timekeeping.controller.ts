@@ -1,8 +1,10 @@
-import { Body, Controller, Get,HttpException,HttpStatus,Post,Put,Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get,HttpException,HttpStatus,Param,Post,Put,Req,Request, UseGuards } from "@nestjs/common";
+import { log } from "console";
 import { AuthGuard } from "src/auth/authGuard";
 import { OfficeService } from "src/services/office.service";
 import { StaffServices } from "src/services/staff.services";
 import { TimekeepingServices } from "src/services/timekeeping.service";
+import { DriverDTO } from "src/staff/driver.dto";
 
 @Controller('timekeeping')
 export class TimekeepingController {
@@ -47,5 +49,29 @@ export class TimekeepingController {
     @Post("overtimeend")
     async checkInOverTimeEnd(@Request() req,@Body() data) {
        return this.timeKeepingServices.checkOutOverTime(req,data)
+    }
+
+    @UseGuards(AuthGuard)
+    @Get("driver")
+    async getAlldataTimeKeepingByDriver(@Request() req) {
+        console.log(req);
+        
+        let timekeep = await this.timeKeepingServices.findAllByStaff(req)
+        return timekeep.map((e)=>e.convertTimeKeepingDriverToDTO())
+    }
+
+    @UseGuards(AuthGuard)
+    @Get("driver/:id")
+    async getdataTimeKeepingByDriver(@Param('id') id:string) {
+        let driver = await this.timeKeepingServices.findDriverById(id)
+        return driver
+    }
+
+    @UseGuards(AuthGuard)
+    @Put("driver/:id")
+    async editdataTimeKeepingByDriver(@Param('id') id:string,@Body() data) {
+        console.log(data);
+        let driver = await this.timeKeepingServices.editDriver(id,data)
+        return driver
     }
 }

@@ -13,28 +13,23 @@ import { log } from 'console';
 export class AuthGuard implements CanActivate {
     constructor(private jwtService: JwtService) { }
     async canActivate(context: ExecutionContext): Promise<boolean> {
-    
+
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
         try {
-            // const cookie = request.cookies['jwt']
-
-            console.log("token",request.cookies['jwt']);
-            
             const data = await this.jwtService.verifyAsync(token,
                 {
-                    secret: jwtConstants.secret 
+                    secret: jwtConstants.secret
                 });
-                
+
             if (!data) {
                 throw new UnauthorizedException();
             }
-            
+
             request['user'] = data;
             return true;
 
         } catch (error) {
-            console.log("LOI");            
             throw new UnauthorizedException();
         }
 

@@ -40,4 +40,8 @@ export class UserServices {
             const user = await this.usersRepository.save(res);
             return user
       }
+
+      async updatePassword(user){
+        return await this.usersRepository.save(user);
+      }
 }

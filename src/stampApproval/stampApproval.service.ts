@@ -38,8 +38,6 @@ export class StampApprovalService {
             return await this.repository.find();
         }
 
-        console.log('staff.affiliatedOffice.baseName', staff.affiliatedOffice.baseName);
-
         return await this.findAllByOfficeName(staff.affiliatedOffice.baseName)
     }
 

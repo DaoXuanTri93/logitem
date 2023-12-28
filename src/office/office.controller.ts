@@ -21,6 +21,8 @@ export class OfficeController {
     createOffice(@Body() res: any) {
         return this.officeServices.createOffice(res)
     }
+
+    @UseGuards(AuthGuard)
     @Put(':id')
     updateOffice(@Param('id') id: string, @Body() res: OfficeDTO) {
         console.log(res);
