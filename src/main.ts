@@ -7,9 +7,9 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.useStaticAssets(join(__dirname, '..', 'public-flutter'));
-  app.setBaseViewsDir(join(__dirname, '..', 'index'));
-  app.setViewEngine('html');
+  // app.useStaticAssets(join(__dirname, '..', 'public-flutter'));
+  // app.setBaseViewsDir(join(__dirname, '..', 'index'));
+  // app.setViewEngine('html');
   app.use(cookieParser())
   app.enableCors({
     credentials :true
