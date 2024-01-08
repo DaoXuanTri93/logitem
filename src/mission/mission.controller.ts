@@ -1,5 +1,4 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Request, UseGuards } from "@nestjs/common";
-import { log } from "console";
 import { AuthGuard } from "src/auth/authGuard";
 import { MissionServices } from "src/services/mission.service";
 import { StaffServices } from "src/services/staff.service";
@@ -19,7 +18,6 @@ export class MissionController {
     @Get()
     async getAllDataMission(@Request() req) {
         let datetime = new Date()
-        console.log(datetime);
         // let date = datetime.toLocaleDateString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
         let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
@@ -33,7 +31,6 @@ export class MissionController {
         }
         let staffName = staff.userName
         let mission = await this.missionServices.findAllMissonNowByUser(staffName, today)
-        console.log(mission);
         
         return mission.map((e) => e.convertMissionDTO())
     }
@@ -56,7 +53,6 @@ export class MissionController {
         // }
         // let staffName = staff.userName
         let mission = await this.missionServices.findAll()
-            console.log(mission);
             
         return mission.map((e) =>  e.convertMissionDTO())
     }

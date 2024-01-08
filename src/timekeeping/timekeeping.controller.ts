@@ -57,8 +57,6 @@ export class TimekeepingController {
     @UseGuards(AuthGuard)
     @Get("driver")
     async getAlldataTimeKeepingByDriver(@Request() req) {
-        console.log(req);
-        
         let timekeep = await this.timeKeepingServices.findAllByStaff(req)
         return timekeep.map((e)=>e.convertTimeKeepingDriverToDTO())
     }

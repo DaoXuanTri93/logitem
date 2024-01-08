@@ -36,17 +36,20 @@ import { StampApprovalModule } from './stampApproval/stampApproval.module';
       extra: {
         trustServerCertificate: true,
       }
-
+      
     }),
     AuthModule,
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '1d' },
-    }),
+    })
+
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {
-  constructor(private dataSource: DataSource) {}
+  constructor(private dataSource: DataSource) {
+   
+  }
 }

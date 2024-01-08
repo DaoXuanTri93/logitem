@@ -1,8 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { ExceptionsHandler } from "@nestjs/core/exceptions/exceptions-handler";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ok } from "assert";
-import { log } from "console";
 import { EnterDistance } from "src/models/enterDistance.entity";
 import { TimeKeeping } from "src/models/timekeeping.entity";
 import { StaffServices } from "src/services/staff.service";
@@ -33,7 +31,6 @@ export class EnterDistanceService {
         let year = datetime.getFullYear();
         let today = year + '/' + month + '/' + date
         var checkXe = await this.findOneEnterDistance(userNameId)
-        console.log(checkXe);
         
         if (checkXe == null) {
             var data = {

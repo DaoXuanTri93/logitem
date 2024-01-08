@@ -145,7 +145,6 @@ export class TimekeepingServices {
             timekeeping.staff = staff;
             timekeeping.userName = staff.userName;
             timekeeping.dayTimeKeeping = today;
-            console.log(data);
             data.overTimeStart == null ? timekeeping.overTimeStart = time : timekeeping.overTimeStart = data.overTimeStart;
             if (mission.length > 0) {
                 timekeeping.mission = true

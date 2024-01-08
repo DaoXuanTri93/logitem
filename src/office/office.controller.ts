@@ -30,7 +30,6 @@ export class OfficeController {
     @UseGuards(AuthGuard)
     @Put(':id')
     updateOffice(@Param('id') id: string, @Body() res: OfficeDTO) {
-        console.log(res);
         return this.officeServices.updateOfficebyid(id, res)
     }
 
@@ -39,7 +38,6 @@ export class OfficeController {
     async getOfficeByUser(@Request() req) {
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
-        // console.log(staff);
         
         if(staff == null){
             throw new HttpException("The account has not been verified by staff",HttpStatus.BAD_REQUEST)
