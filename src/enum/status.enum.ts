@@ -1,9 +1,0 @@
-export enum Status {
-    PENDING = 'PENDING',
-    APPROVED = 'APPROVED',
-    CANCELLING = 'CANCELLING',
-    CANCELLED = "CANCELLED",
-    WAITINGCONFIRM = "WAITING CONFIRM",
-    REFUSE = "REFUSE"
-    
-  } 
