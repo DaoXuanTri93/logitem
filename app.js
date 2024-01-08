@@ -9,7 +9,7 @@ app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "public-flutter/index.html"));
 });
 
-const port = 3000; // Choose a suitable port number
+const port = 2800; // Choose a suitable port number
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
