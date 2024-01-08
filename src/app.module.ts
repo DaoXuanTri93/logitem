@@ -26,11 +26,11 @@ import { StampApprovalModule } from './stampApproval/stampApproval.module';
     StaffModule,
     TypeOrmModule.forRoot({
       type: 'mssql',
-      host: 'HVLUYN1-PC',
+      host: '192.168.249.81',
       port: 1433,
       username: 'sa',
       password: '123456a@',
-      database: 'nestjs',
+      database: 'logitem',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
       extra: {
