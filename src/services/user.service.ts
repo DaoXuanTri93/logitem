@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserDTO } from "src/users/users.dto";
+import { SearchUserDTO, UserDTO } from "src/users/users.dto";
 import { Users } from "src/models/users.entity";
 import { Repository } from "typeorm";
 
@@ -18,23 +18,33 @@ export class UserServices {
     findOne(id: string) {
         return this.usersRepository.findOneBy({ id });
     }
-    findOneByUserName(username: string) {
-        return this.usersRepository.findOneBy({ username });
+   async  findOneByUserName(username : string) {
+        return await this.usersRepository.findOneBy({username});
     }
 
     async remove(id: number) {
         await this.usersRepository.delete(id);
     }
 
-     createUser(res:any) {
+    async createUser(res:Users) {
+        let checkuser = await this.findOneByUserName(res.username)
+        if(checkuser!= null){
+            throw new HttpException("Account name already exists",HttpStatus.BAD_REQUEST)
+        }
         const user = this.usersRepository.create(res);
-        return this.usersRepository.save(user)
+
+        return await this.usersRepository.save(user)
       }
 
      async updateUserbyid(id:string,res:UserDTO) {
             const user = await this.usersRepository.update(id,res);
             return user
       }
+
+      async updateUserbyStaffUser(id:string,res:any) {
+        const user = await this.usersRepository.update(id,res);
+        return user
+    }
 
       async updateUser(res:Users) {
             const user = await this.usersRepository.save(res);

@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
 import { Staff } from "./staff.entity"
 import { BaseEntity } from "./base"
 import { Status } from "src/enum/status.enum"
+import { MissionDTO } from "src/mission/mission.dto"
 
 @Entity()
 export class LogMission extends BaseEntity{
@@ -22,5 +23,7 @@ export class LogMission extends BaseEntity{
 
     @Column()
     endDay: string
+
+
 
 }

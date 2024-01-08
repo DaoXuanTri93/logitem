@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "src/auth/constant";
-import { LogMissionController } from "./mission.controller";
+import { LogMissionController } from "./logmission.controller";
 import { LogMission } from "src/models/logmission.entity";
 import { LogMissionServices } from "src/services/logmission.service";
 

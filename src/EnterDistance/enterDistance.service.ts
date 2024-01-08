@@ -2,9 +2,10 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { ExceptionsHandler } from "@nestjs/core/exceptions/exceptions-handler";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ok } from "assert";
+import { log } from "console";
 import { EnterDistance } from "src/models/enterDistance.entity";
 import { TimeKeeping } from "src/models/timekeeping.entity";
-import { StaffServices } from "src/services/staff.services";
+import { StaffServices } from "src/services/staff.service";
 import { TimekeepingServices } from "src/services/timekeeping.service";
 import { Repository } from "typeorm";
 
@@ -23,13 +24,22 @@ export class EnterDistanceService {
 
     async createEnterDistance(body, userNameId) {
         
-        let dateCurrent = new Date(Date.now()).toLocaleDateString();
+        // let dateCurrent = new Date(Date.now()).toLocaleDateString();
+
+        let datetime = new Date(Date.now())
+        // let time = datetime.toLocaleTimeString();
+        let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let year = datetime.getFullYear();
+        let today = year + '/' + month + '/' + date
         var checkXe = await this.findOneEnterDistance(userNameId)
+        console.log(checkXe);
+        
         if (checkXe == null) {
             var data = {
                 ...body,
                 "userNameId": userNameId,
-                "runningDay": dateCurrent
+                "runningDay": today
             }
              this.respository.save(data)
             return HttpStatus.OK;
@@ -38,26 +48,36 @@ export class EnterDistanceService {
         checkXe.startingPoint = body.startingPoint
         checkXe.firstKilometerPhoto = body.firstKilometerPhoto
         checkXe.userNameId = userNameId;
-        checkXe.runningDay = dateCurrent;
+        checkXe.runningDay = today;
 
         this.respository.save(checkXe)
         return HttpStatus.OK;
     }
 
     async updateEnterDistance(body, userNameId) {
-        let date = new Date(Date.now()).toLocaleDateString();
+        let datetime = new Date(Date.now())
+        // let time = datetime.toLocaleTimeString();
+        let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let year = datetime.getFullYear();
+        let today = year + '/' + month + '/' + date
+        // let date = new Date(Date.now()).toLocaleDateString();
         let staff = await this.staffServices.findOneByIdUser(userNameId)
         var checkXe = await this.findOneEnterDistance(userNameId)
         let timekeeping = await this.timekeepingServices.findOneByUserName(staff.userName, date)
         if (timekeeping == null) {
             timekeeping = new TimeKeeping();
             timekeeping.staff = staff;
-            timekeeping.userName = staff.userName;
-            timekeeping.dayTimeKeeping = date;
+            timekeeping.userName = staff.userName;   
+            timekeeping.dayTimeKeeping = today;
+        }
+        
+        if ( checkXe == null) {
+            throw new HttpException("StartPoint cannot null",HttpStatus.BAD_REQUEST);
         }
         
         if (body.endPoint < checkXe.startingPoint) {
-            throw new HttpException("endPoint cannot be smaller than startingPoint",HttpStatus.BAD_REQUEST);
+            throw new HttpException("EndPoint cannot be smaller than StartPoint",HttpStatus.BAD_REQUEST);
         }
         checkXe.endPoint = body.endPoint
         checkXe.lastKilometerPhoto = body.lastKilometerPhoto
@@ -72,8 +92,13 @@ export class EnterDistanceService {
     }
 
      async findOneEnterDistance(userNameId){
-        let dateCurrent = new Date(Date.now()).toLocaleDateString();
-        return await this.respository.findOneBy({runningDay : dateCurrent, userNameId: {id : userNameId}});;
+        let datetime = new Date(Date.now())
+        // let time = datetime.toLocaleTimeString();
+        let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let year = datetime.getFullYear();
+        let today = year + '/' + month + '/' + date
+        return await this.respository.findOneBy({runningDay : today, userNameId: {id : userNameId}});;
         
     }
 

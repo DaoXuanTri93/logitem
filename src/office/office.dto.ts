@@ -1,6 +1,4 @@
 
-import { Office } from "src/models/office.entity"
-
 export class OfficeDTO {
 
     officeId: string
@@ -41,4 +39,3 @@ export class OfficeDTO {
 
   }
   
-

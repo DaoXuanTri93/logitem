@@ -1,9 +1,9 @@
 import { Controller, Get, Param, Post, Put, UseGuards,Request, Body } from "@nestjs/common";
 import { StampApprovalService } from "./stampApproval.service";
 import { AuthGuard } from "src/auth/authGuard";
-import { OfficeService } from "src/services/office.service";
-
-
+import { AuthorGuard } from "src/auth/authorGuard";
+import { Roles } from "src/auth/roles.decorator";
+import { Role } from "src/enum/role.enum";
 
 
 @Controller('stampApprovalController')
@@ -35,11 +35,20 @@ export class StampApprovalController {
         return (await this.stampApprovalService.findAllByStaff(req)).map((e) => e.convertStampApproval());
     }
 
+    @UseGuards(AuthGuard,AuthorGuard)
+    @Roles(Role.Driver)
+    @Get("driver")
+    async findAllByDriver(@Request() req){
+        return (await this.stampApprovalService.findAllByDriver(req)).map((e) => e.convertStampApproval());
+    }
+
+
 
     @UseGuards(AuthGuard)
     @Post(':id')
-    async approveDataStampApproval(@Param('id') id:string,@Body() data) {
-        let stampApproval = await this.stampApprovalService.approveData(id,data)
+    async approveDataStampApproval(@Param('id') id:string,@Body() data,@Request() req) {
+        let stampApproval = await this.stampApprovalService.approveData(id,data,req)
+        
         return stampApproval
     }
 
@@ -47,7 +56,7 @@ export class StampApprovalController {
     @Get(':id')
     async getDataStampApproval(@Param('id') id:string) {
         let stampApproval = await this.stampApprovalService.getData(id)
-        return stampApproval
+        return stampApproval.convertStampApproval()
     }
     // @UseGuards(AuthGuard)
     // @Get("office")

@@ -1,22 +1,27 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put ,Request, UseGuards} from '@nestjs/common';
+
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put ,Request, UseGuards} from '@nestjs/common';
 import { AuthGuard } from 'src/auth/authGuard';
-import { OfficeService } from 'src/services/office.service';
-import { StaffServices } from 'src/services/staff.services';
+import { OfficeServices } from 'src/services/office.service';
 import { OfficeDTO } from './office.dto';
+import { StaffServices } from 'src/services/staff.service';
 
 @Controller('office')
 export class OfficeController {
-    constructor(readonly officeServices: OfficeService,readonly staffServices: StaffServices) { }
+    constructor(readonly officeServices: OfficeServices,readonly staffServices: StaffServices) { }
+
+    @UseGuards(AuthGuard)
     @Get()
     async getAllOffice() {
-        var data = await this.officeServices.findAll()
-        if (data.length > 0) {
-            var response = data.map((item)=> item.convertOfficeDTO());
-         } else {
-            return data;
-        }
-        return response;
+        // var data = await this.officeServices.findAll()
+        // if (data.length > 0) {
+        //     var response = data.map((item)=> item.convertOfficeDTO());
+        //  } else {
+        //     return data;
+        // }
+        return await this.officeServices.findAll();
     }
+
+    @UseGuards(AuthGuard)
     @Post()
     createOffice(@Body() res: any) {
         return this.officeServices.createOffice(res)
@@ -32,15 +37,27 @@ export class OfficeController {
     @UseGuards(AuthGuard)
     @Get("info")
     async getOfficeByUser(@Request() req) {
-        let id = req.user.id;
+        let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
+        // console.log(staff);
+        
         if(staff == null){
-            throw new HttpException("Tài khoản chưa được xác thực nhân viên",HttpStatus.BAD_REQUEST)
+            throw new HttpException("The account has not been verified by staff",HttpStatus.BAD_REQUEST)
         }
-        let office = await this.officeServices.findOneByIdStaff(staff.staffId)
+        let office = await this.officeServices.findOneByIdStaff(staff)
         if(office == null){
-            throw new HttpException("Tài khoản chưa thuộc bất kì văn phong nào",HttpStatus.BAD_REQUEST)
+            throw new HttpException("The account does not belong to any style",HttpStatus.BAD_REQUEST)
         }
-        return office.convertOfficeToDTO()
+        return office
+    }
+    
+    @Get(':id')
+    async getOfficeById(@Param('id') id: string) {
+        return this.officeServices.findOne(id);
+    }
+
+    @Delete(":id")
+    async remove(@Param("id") id: string) {
+      return await this.officeServices.remove(id);
     }
 }

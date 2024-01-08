@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Res, UnauthorizedException } from '@nestjs/common';
-import { UserServices } from './userservices';
+import { UserServices } from './user.service';
 import { JwtService } from '@nestjs/jwt';
 import { Users } from 'src/models/users.entity';
 
@@ -15,11 +15,11 @@ export class AuthService {
     let user = new Users();
     user = await this.usersService.findOneByUserName(signInDto.username);
     if (user == null) {
-      throw new HttpException('Tài khoản không tồn tại', HttpStatus.NOT_FOUND);
+      throw new HttpException('Account does not exist', HttpStatus.NOT_FOUND);
     }
     if (user?.password !== signInDto.password || user == null) {
 
-      throw new HttpException('Mật khẩu chưa chính xác, vui lòng thử lại', HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+      throw new HttpException('Password is not correct, please try again', HttpStatus.NON_AUTHORITATIVE_INFORMATION);
     }
 
 
@@ -30,12 +30,12 @@ export class AuthService {
         response.cookie('jwt', jwt, { httpOnly: true })
         return { jwt };
       } else {
-        throw new HttpException('Đăng nhập thất bại, tài khoản chưa được setting quyền đăng nhập', HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+        throw new HttpException('Login failed, account has not been set up to log in', HttpStatus.NON_AUTHORITATIVE_INFORMATION);
       }
     } else {                          
       if (user.MAC !== null) {
         if (user.MAC !== signInDto.MAC) {
-          throw new HttpException('Tài khoản không được xác thực trên thiết bị này', HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+          throw new HttpException('The account is not authenticated on this device', HttpStatus.NON_AUTHORITATIVE_INFORMATION);
         }
       }
 
@@ -47,7 +47,7 @@ export class AuthService {
         response.cookie('jwt', jwt, { httpOnly: true })
         return { jwt };
       } else {
-        throw new HttpException('Đăng nhập thất bại, tài khoản chưa được setting quyền đăng nhập', HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+        throw new HttpException('Login failed, account has not been set up to log in', HttpStatus.NON_AUTHORITATIVE_INFORMATION);
       }
     }
 
@@ -57,14 +57,12 @@ export class AuthService {
     let id = req.user.sub;
     let data = await this.usersService.findOne(id)
     if(body.passwordNew != body.passwordNewConfirm){
-      throw new UnauthorizedException('Mật khẩu mới không trùng khớp')
+      throw new UnauthorizedException('The new password does not match')
     }
     if(data.password != body.passwordOld){
-      throw new UnauthorizedException('Mật khẩu cũ không chính xác')
+      throw new UnauthorizedException('The old password is incorrect')
     }
- 
       data.password = body.passwordNew;
-      console.log('data.password',data.password);
       return await this.usersService.updatePassword(data);
   }
 }

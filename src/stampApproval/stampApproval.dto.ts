@@ -1,6 +1,5 @@
 
 
-
 export class StampApprovalDTO {
     stampApprovalId : string
     staff: String
@@ -11,5 +10,6 @@ export class StampApprovalDTO {
     approvalDate: String
     stampingBeforeCorrection: string // ngay truoc
     stampingAfterCorrection: string // ngay sau
+    status:string
     reason: string
 }

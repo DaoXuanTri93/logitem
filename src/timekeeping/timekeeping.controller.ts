@@ -1,27 +1,30 @@
 import { Body, Controller, Get,HttpException,HttpStatus,Param,Post,Put,Req,Request, UseGuards } from "@nestjs/common";
-import { log } from "console";
 import { AuthGuard } from "src/auth/authGuard";
-import { OfficeService } from "src/services/office.service";
-import { StaffServices } from "src/services/staff.services";
+import { OfficeServices } from "src/services/office.service";
+import { StaffServices } from "src/services/staff.service";
 import { TimekeepingServices } from "src/services/timekeeping.service";
-import { DriverDTO } from "src/staff/driver.dto";
+
 
 @Controller('timekeeping')
 export class TimekeepingController {
-    constructor(readonly timeKeepingServices: TimekeepingServices,readonly staffServices: StaffServices,readonly officeService: OfficeService) { }
+    constructor(readonly timeKeepingServices: TimekeepingServices,readonly staffServices: StaffServices,readonly officeService: OfficeServices) { }
 
     @UseGuards(AuthGuard)
     @Get()
     async getdataTimeKeepingToDay(@Request() req) {
-        let datetime =new Date(Date.now())
-        let date = datetime.toLocaleDateString();
+        let datetime = new Date(Date.now())
+        let time = datetime.toLocaleTimeString();
+        let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let year = datetime.getFullYear();
+        let today = year + '/' + month + '/' + date
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
         if(staff == null){
-            throw new HttpException("Tài khoản chưa được xác thực nhân viên",HttpStatus.BAD_REQUEST)
+            throw new HttpException("Account has not been verified",HttpStatus.BAD_REQUEST)
         }
         let staffName = staff.userName
-        let timekeep = await this.timeKeepingServices.findOneByUserName(staffName,date)
+        let timekeep = await this.timeKeepingServices.findOneByUserName(staffName,today)
         
         // return timekeep
         return timekeep.convertTimeKeepingToDTO()
@@ -70,7 +73,6 @@ export class TimekeepingController {
     @UseGuards(AuthGuard)
     @Put("driver/:id")
     async editdataTimeKeepingByDriver(@Param('id') id:string,@Body() data) {
-        console.log(data);
         let driver = await this.timeKeepingServices.editDriver(id,data)
         return driver
     }

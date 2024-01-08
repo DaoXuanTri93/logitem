@@ -2,17 +2,19 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { And, Repository } from "typeorm";
 import { TimeKeeping } from "src/models/timekeeping.entity";
-import { StaffServices } from "./staff.services";
 import { MissionServices } from "./mission.service";
 import { Role } from "src/enum/role.enum";
 import { Status } from "src/enum/status.enum";
-
+import { StaffServices } from "./staff.service";
+import { Area } from "src/models/area.entity";
 @Injectable()
 export class TimekeepingServices {
 
     constructor(
         @InjectRepository(TimeKeeping)
         private timeKeepingRepository: Repository<TimeKeeping>,
+        @InjectRepository(Area)
+        private areaRepository: Repository<Area>,
         readonly staffServices: StaffServices,
         readonly missionServices: MissionServices
     ) { }
@@ -22,12 +24,18 @@ export class TimekeepingServices {
     }
 
     async findAllByDriver() {
-        return await this.timeKeepingRepository.find({where:{staff:{userAccount:{role:Role.Driver}}}});
+        return await this.timeKeepingRepository.find({ where: { staff: { userAccount: { role: Role.Driver } } } });
     }
-    findAllByDriverAndOffice(officeName:string) {
-        return this.timeKeepingRepository.findBy({staff:{userAccount:{role:Role.Driver},affiliatedOffice:{baseName:officeName}}});
+
+    findAllByMissionDay(startday, endDay) {
+        return this.timeKeepingRepository.createQueryBuilder("time_keeping")
+            .where("time_keeping.dayTimeKeeping >=:startday and time_keeping.dayTimeKeeping <= :endDay", {startday : startday, endDay:endDay })
+            .getMany()
     }
-    save(timeKeeping :TimeKeeping) {
+    findAllByDriverAndOffice(officeName: string) {
+        return this.timeKeepingRepository.findBy({ staff: { userAccount: { role: Role.Driver }, affiliatedOffice: { baseName: officeName } } });
+    }
+    save(timeKeeping: TimeKeeping) {
         return this.timeKeepingRepository.save(timeKeeping);
     }
 
@@ -44,29 +52,32 @@ export class TimekeepingServices {
 
     createTimeKeeping(timekeeping: TimeKeeping) {
         const timekeep = this.timeKeepingRepository.create(timekeeping);
-        return this.timeKeepingRepository.save(timekeeping)
+        return this.timeKeepingRepository.save(timekeep)
     }
     async checkIn(req: any, data: any) {
         let datetime = new Date(Date.now())
-        let date = datetime.toLocaleDateString();
         let time = datetime.toLocaleTimeString();
-
+        let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let year = datetime.getFullYear();
+        let today = year + '/' + month + '/' + date
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
-        let mission = await this.missionServices.findAllMissonByUser(staff.userName, date)
-        console.log(mission);
-        console.log(data.check);
-        if (mission.length == 0 && data.check == false||mission[0].statusMission != Status.APPROVED) {
-            throw new HttpException("Bạn đang nằm ngoài phạm vi chấm công ", HttpStatus.BAD_REQUEST)
+        let mission = await this.missionServices.findAllMissonByUser(staff.userName, today)
+
+        
+        if (mission.length == 0 && data.check == false || mission.length!= 0 ? mission[0].statusMission != Status.APPROVED: data.check == false) {
+            throw new HttpException("You are outside the timekeeping range ", HttpStatus.BAD_REQUEST)
         }
-        let timekeeping = await this.findOneByUserName(staff.userName, date)
+        let timekeeping = await this.findOneByUserName(staff.userName, today)
+        
         if (timekeeping == null) {
             timekeeping = new TimeKeeping();
         }
         timekeeping.timeStartDay = time;
         timekeeping.staff = staff;
         timekeeping.userName = staff.userName;
-        timekeeping.dayTimeKeeping = date;
+        timekeeping.dayTimeKeeping = today;
         if (mission.length > 0) {
             timekeeping.mission = true
         }
@@ -77,25 +88,27 @@ export class TimekeepingServices {
 
     async checkOut(req: any, data: any) {
         let datetime = new Date(Date.now())
-        let date = datetime.toLocaleDateString();
         let time = datetime.toLocaleTimeString();
+        let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let year = datetime.getFullYear();
+        let today = year + '/' + month + '/' + date
 
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
-
-        let mission = await this.missionServices.findAllMissonByUser(staff.userName, date)
-        console.log(mission);
         
-        if ((mission.length == 0 && data.check == false)||mission[0].statusMission != Status.APPROVED) {
-            throw new HttpException("Bạn đang nằm ngoài phạm vi chấm công ", HttpStatus.BAD_REQUEST)
+        let mission = await this.missionServices.findAllMissonByUser(staff.userName, today)
+        
+        if ((mission.length == 0 && data.check == false) ||mission.length!= 0 ? mission[0].statusMission != Status.APPROVED: data.check == false) {
+            throw new HttpException("You are outside the timekeeping range ", HttpStatus.BAD_REQUEST)
         }
         let staffName = staff.userName
-        let timekeeping = await this.findOneByUserName(staffName, date)
+        let timekeeping = await this.findOneByUserName(staffName, today)
         if (timekeeping == null) {
             timekeeping = new TimeKeeping();
             timekeeping.staff = staff;
             timekeeping.userName = staff.userName;
-            timekeeping.dayTimeKeeping = date;
+            timekeeping.dayTimeKeeping = today;
             timekeeping.timeEndDay = time;
             if (mission.length > 0) {
                 timekeeping.mission = true
@@ -106,7 +119,7 @@ export class TimekeepingServices {
         }
         timekeeping.staff = staff;
         timekeeping.userName = staff.userName;
-        timekeeping.dayTimeKeeping = date;
+        timekeeping.dayTimeKeeping = today;
         timekeeping.timeEndDay = time;
         if (mission.length > 0) {
             timekeeping.mission = true
@@ -117,20 +130,22 @@ export class TimekeepingServices {
 
     async checkInOverTime(req: any, data: any) {
         let datetime = new Date(Date.now())
-        let date = datetime.toLocaleDateString();
         let time = datetime.toLocaleTimeString();
+        let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let year = datetime.getFullYear();
+        let today = year + '/' + month + '/' + date
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
         let staffName = staff.userName
-        let timekeeping = await this.findOneByUserName(staffName, date)
-        let mission = await this.missionServices.findAllMissonByUser(staff.userName, date)
+        let timekeeping = await this.findOneByUserName(staffName, today)
+        let mission = await this.missionServices.findAllMissonByUser(staff.userName, today)
         if (timekeeping == null) {
             timekeeping = new TimeKeeping();
             timekeeping.staff = staff;
             timekeeping.userName = staff.userName;
-            timekeeping.dayTimeKeeping = date;
+            timekeeping.dayTimeKeeping = today;
             console.log(data);
-
             data.overTimeStart == null ? timekeeping.overTimeStart = time : timekeeping.overTimeStart = data.overTimeStart;
             if (mission.length > 0) {
                 timekeeping.mission = true
@@ -141,7 +156,7 @@ export class TimekeepingServices {
         }
         timekeeping.staff = staff;
         timekeeping.userName = staff.userName;
-        timekeeping.dayTimeKeeping = date;
+        timekeeping.dayTimeKeeping = today;
         data.overTimeStart == "" ? timekeeping.overTimeStart = time : timekeeping.overTimeStart = data.overTimeStart;
         if (mission.length > 0) {
             timekeeping.mission = true
@@ -153,18 +168,21 @@ export class TimekeepingServices {
 
     async checkOutOverTime(req: any, data: any) {
         let datetime = new Date(Date.now())
-        let date = datetime.toLocaleDateString();
         let time = datetime.toLocaleTimeString();
+        let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let year = datetime.getFullYear();
+        let today = year + '/' + month + '/' + date
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
         let staffName = staff.userName
-        let timekeeping = await this.findOneByUserName(staffName, date)
-        let mission = await this.missionServices.findAllMissonByUser(staff.userName, date)
+        let timekeeping = await this.findOneByUserName(staffName, today)
+        let mission = await this.missionServices.findAllMissonByUser(staff.userName, today)
         if (timekeeping == null) {
             timekeeping = new TimeKeeping();
             timekeeping.staff = staff;
             timekeeping.userName = staff.userName;
-            timekeeping.dayTimeKeeping = date;
+            timekeeping.dayTimeKeeping = today;
             data.overTimeEnd == null ? timekeeping.overTimeEnd = time : timekeeping.overTimeEnd = data.overTimeEnd;
             if (mission.length > 0) {
                 timekeeping.mission = true
@@ -175,7 +193,7 @@ export class TimekeepingServices {
         }
         timekeeping.staff = staff;
         timekeeping.userName = staff.userName;
-        timekeeping.dayTimeKeeping = date;
+        timekeeping.dayTimeKeeping = today;
         data.overTimeEnd == "" ? timekeeping.overTimeEnd = time : timekeeping.overTimeEnd = data.overTimeEnd;
         if (mission.length > 0) {
             timekeeping.mission = true
@@ -188,34 +206,35 @@ export class TimekeepingServices {
     async findAllByStaff(req: any) {
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
-        
-        if(staff == null){
-            throw new HttpException("Tài khoản chưa được xác thực nhân viên",HttpStatus.BAD_REQUEST)
+        if (staff == null) {
+            throw new HttpException("Account has not been verified", HttpStatus.BAD_REQUEST)
         }
         if (staff.userAccount.role == Role.Admin) {
             return await this.findAllByDriver();
         }
-        
+
         return await this.findAllByDriverAndOffice(staff.affiliatedOffice.baseName)
 
     }
 
     async findDriverById(id: string) {
         let driver = await this.findOne(id)
-        if(driver == null){
-            throw new HttpException("Không tồn tại tài xế này",HttpStatus.BAD_REQUEST)
-        }   
+        if (driver == null) {
+            throw new HttpException("This driver does not exist", HttpStatus.BAD_REQUEST)
+        }
         return driver.convertTimeKeepingDriverByIdToDTO()
 
     }
 
-    async editDriver(id: string,data:any) {
+    async editDriver(id: string, data: any) {
         let driver = await this.findOne(id)
-        console.log(data);
         let staff = driver.staff;
-        staff.userName =data.userName
+        staff.userName = data.userName
         staff.dateOfBirth = data.dateOfBirth
-        staff.area =data.area
-        this.staffServices.save(staff)
+        let area = await this.areaRepository.findOneBy({areaName : data.area})
+        if(area !=null){
+            staff.area = area
+        }
+         return await this.staffServices.save(staff)
     }
 }

@@ -1,11 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { log } from "console";
 import { Role } from "src/enum/role.enum";
-import { Staff } from "src/models/staff.entity";
+import { Status } from "src/enum/status.enum";
 import { StampApproval } from "src/models/stampApproval.entity";
-import { OfficeService } from "src/services/office.service";
-import { StaffServices } from "src/services/staff.services";
+import { LogApproval } from "src/models/timekeeping-registation.entity";
+import { LogApprovalServices } from "src/services/logapproval.service";
+import { OfficeServices } from "src/services/office.service";
+import { StaffServices } from "src/services/staff.service";
+import { TimekeepingServices } from "src/services/timekeeping.service";
 import { Repository } from "typeorm";
 
 
@@ -18,7 +20,8 @@ export class StampApprovalService {
         @InjectRepository(StampApproval)
         private readonly repository: Repository<StampApproval>,
         readonly staffServices: StaffServices,
-        readonly officeServices: OfficeService
+        readonly logApprovalServices: LogApprovalServices,
+        readonly officeServices: OfficeServices
     ) { }
 
 
@@ -30,6 +33,10 @@ export class StampApprovalService {
         return await this.repository.findBy({ officeName: officeName });
     }
 
+    async findAllByDriverName(driverName: string) {
+        return await this.repository.findBy({ driverName: driverName });
+    }
+
     async findAllByStaff(req: any) {
         let id = req.user.sub;
 
@@ -39,6 +46,13 @@ export class StampApprovalService {
         }
 
         return await this.findAllByOfficeName(staff.affiliatedOffice.baseName)
+    }
+
+    async findAllByDriver(req: any) {
+        let id = req.user.sub;
+        let staff = await this.staffServices.findOneByIdUser(id)
+    
+        return await this.findAllByDriverName(staff.userName)
     }
 
     async findAllOfficeByStaff(req: any) {
@@ -60,7 +74,7 @@ export class StampApprovalService {
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
         if (staff == null) {
-            return new HttpException("Không tồn tại tài xế", HttpStatus.BAD_REQUEST)
+            return new HttpException("Driver does not exist", HttpStatus.BAD_REQUEST)
         }
         let stampApproval = new StampApproval();
 
@@ -75,18 +89,33 @@ export class StampApprovalService {
         return await this.repository.save(stampApproval)
     }
 
-    async approveData(id: string, data: any) {
+    async approveData(id: string, data: any, req: any) {
+        let iduser = req.user.sub;
+        let staff = await this.staffServices.findOneByIdUser(iduser)
+
         let datetime = new Date(Date.now())
-        let date = datetime.toLocaleDateString();
+        let time = datetime.toLocaleTimeString();
+        let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let year = datetime.getFullYear();
+        let today = year + '/' + month + '/' + date
         let stampApproval = await this.repository.findOneBy({ stampApprovalId: id })
         if (stampApproval == null) {
-            return new HttpException("Không tìm thấy thông tin", HttpStatus.BAD_REQUEST)
+            return new HttpException("No information found", HttpStatus.BAD_REQUEST)
         }
-        console.log(data);
-        console.log(data.reason);
-        stampApproval.approvalDate = date;
+        let logApproval = new LogApproval();
+        logApproval.staff = staff
+        logApproval.approvalDay = today;
+        logApproval.hourApproval = time;
+        logApproval.officeName = staff.affiliatedOffice.baseName;
+        logApproval.stampApproval = stampApproval;
+        logApproval.status = data.status
+
+        this.logApprovalServices.save(logApproval);
+        stampApproval.approvalDate = today;
         stampApproval.reason = data.reason
-        stampApproval.approval= data.approval;
+        stampApproval.approval = true;
+        stampApproval.status = data.status
         return await this.repository.save(stampApproval)
 
     }

@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typ
 import { Staff } from "./staff.entity";
 import { Role } from "src/enum/role.enum";
 import { EnterDistance } from "./enterDistance.entity";
-
+import { SearchUserDTO } from "src/users/users.dto";
 @Entity()
 export class Users {
   @PrimaryGeneratedColumn()
@@ -14,10 +14,10 @@ export class Users {
   @Column()
   password: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   role: Role;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   MAC: string;
 
   @OneToOne(() => Staff, (staff) => staff.userAccount)
@@ -25,4 +25,15 @@ export class Users {
 
   @OneToMany(() => EnterDistance, (busSchedule) => busSchedule.userNameId)
   busSchedule?: EnterDistance
+
+
+  converUsersToSearchDTO(): SearchUserDTO {
+    let searchUserDTO = new SearchUserDTO();
+
+    searchUserDTO.id = this.id
+    searchUserDTO.role = this.role
+    searchUserDTO.username = this.username
+
+    return searchUserDTO
+  }
 }

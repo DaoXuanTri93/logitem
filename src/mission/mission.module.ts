@@ -12,6 +12,7 @@ import { MissionRegistation } from "src/models/mission-registation.entity";
 import { MissionServices } from "src/services/mission.service";
 import { MissionController } from "./mission.controller";
 import { LogMissionModule } from "src/logmission/mission.module";
+import { TimeKeepingModule } from "src/timekeeping/timekeeping.module";
 
 
 @Module({

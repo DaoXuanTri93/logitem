@@ -1,6 +1,8 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Staff } from "./staff.entity"
 import { OfficeDTO } from "src/office/office.dto"
+import { Area } from "./area.entity"
+
 
 @Entity()
 export class Office{
@@ -44,9 +46,12 @@ export class Office{
     @Column({ nullable: true })
     engravingRangeRadius : string
 
-    @OneToMany(() => Staff, (listStaff) => listStaff.affiliatedOffice)
-    listStaff?: Staff[]
+    @ManyToOne(() => Area, (area) => area.office,{eager: true})
+    @JoinColumn()
+    area: Area
 
+    @OneToMany(() => Staff, (staff) => staff.affiliatedOffice)
+    staff?: Staff
 
     convertOfficeToDTO():OfficeDTO{
         let officeDTO = new OfficeDTO();
@@ -75,4 +80,5 @@ export class Office{
         return officedto;
 
     }
+
 }

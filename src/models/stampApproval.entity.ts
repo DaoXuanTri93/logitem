@@ -1,6 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Staff } from "./staff.entity"
 import { StampApprovalDTO } from "src/stampApproval/stampApproval.dto"
+import { LogApproval } from "./timekeeping-registation.entity"
+import { Status } from "src/enum/status.enum"
 
 
 @Entity()
@@ -33,8 +35,14 @@ export class StampApproval {
     @Column()
     stampingAfterCorrection: string // ngay sau
 
+    @Column({default: Status.PENDING})
+    status: Status
+
     @Column({nullable: true})
     reason: string
+
+    @OneToMany(()=> LogApproval, (logApproval) => logApproval.stampApproval)
+    logApproval: LogApproval
 
     convertStampApproval():StampApprovalDTO{
         let stampApprovalDTO = new StampApprovalDTO();
@@ -47,7 +55,8 @@ export class StampApproval {
         stampApprovalDTO.approvalDate = this.approvalDate;
         stampApprovalDTO.stampingBeforeCorrection = this.stampingBeforeCorrection;
         stampApprovalDTO.stampingAfterCorrection = this.stampingAfterCorrection;
-        stampApprovalDTO.reason = this.reason
+        stampApprovalDTO.status = this.status;
+        stampApprovalDTO.reason = this.reason;
         return stampApprovalDTO;
     }
 }

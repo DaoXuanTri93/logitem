@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
 import { Staff } from "./staff.entity"
 import { BaseEntity } from "./base"
 import { Status } from "src/enum/status.enum"
+import { MissionDTO } from "src/mission/mission.dto"
 
 @Entity()
 export class MissionRegistation extends BaseEntity{
@@ -24,4 +25,13 @@ export class MissionRegistation extends BaseEntity{
     @Column({default: Status.WAITINGCONFIRM})
     statusMission: Status
 
+    convertMissionDTO():MissionDTO{
+        let missionDTO = new MissionDTO();
+        missionDTO.userName = this.userName
+        missionDTO.id = this.id
+        missionDTO.endDay =this.endDay;
+        missionDTO.startDay = this.startDay
+        missionDTO.statusMission = this.statusMission
+        return missionDTO
+    }
 }

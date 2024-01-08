@@ -10,6 +10,7 @@ import { jwtConstants } from './auth/constant';
 import { TimeKeepingModule } from './timekeeping/timekeeping.module';
 import { StaffModule } from './staff/staff.module';
 import { MissionModule } from './mission/mission.module';
+import { OfficeModule } from './office/office.module';
 
 import { EnterDistanceModule } from './EnterDistance/enterDistance.module';
 import { StampApprovalModule } from './stampApproval/stampApproval.module';
@@ -21,6 +22,8 @@ import { StampApprovalModule } from './stampApproval/stampApproval.module';
     MissionModule,
     EnterDistanceModule,
     StampApprovalModule,
+    OfficeModule,
+    StaffModule,
     TypeOrmModule.forRoot({
       type: 'mssql',
       host: 'HVLUYN1-PC',

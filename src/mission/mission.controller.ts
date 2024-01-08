@@ -1,47 +1,92 @@
-import { Body, Controller, Get,HttpException,HttpStatus,Param,Post,Put,Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Request, UseGuards } from "@nestjs/common";
 import { log } from "console";
 import { AuthGuard } from "src/auth/authGuard";
 import { MissionServices } from "src/services/mission.service";
-import { OfficeService } from "src/services/office.service";
-import { StaffServices } from "src/services/staff.services";
-import { TimekeepingServices } from "src/services/timekeeping.service";
+import { StaffServices } from "src/services/staff.service";
 
 @Controller('mission')
 export class MissionController {
-    constructor(readonly missionServices: MissionServices,readonly staffServices: StaffServices) { }
+    constructor(readonly missionServices: MissionServices, readonly staffServices: StaffServices) { }
 
     @UseGuards(AuthGuard)
     @Post()
-    async registerMission(@Body() data:any,@Request() req,) {
-       return this.missionServices.checkMission(req,data)
+    async registerMission(@Body() data: any, @Request() req,) {
+        return this.missionServices.checkMission(req, data)
     }
 
 
     @UseGuards(AuthGuard)
     @Get()
     async getAllDataMission(@Request() req) {
-        let datetime = new Date(Date.now())
-        let date = datetime.toLocaleDateString();
-        let id = req.user.id;
+        let datetime = new Date()
+        console.log(datetime);
+        // let date = datetime.toLocaleDateString();
+        let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let year = datetime.getFullYear();
+        let today = year + '/' + month + '/' + date
+
+        let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
-        if(staff == null){
-            throw new HttpException("Tài khoản chưa được xác thực nhân viên",HttpStatus.BAD_REQUEST)
+        if (staff == null) {
+            throw new HttpException("Tài khoản chưa được xác thực nhân viên", HttpStatus.BAD_REQUEST)
         }
         let staffName = staff.userName
-        let mission = await this.missionServices.findAllMissonNowByUser(staffName,date)
-        return mission
+        let mission = await this.missionServices.findAllMissonNowByUser(staffName, today)
+        console.log(mission);
+        
+        return mission.map((e) => e.convertMissionDTO())
     }
+
+    @UseGuards(AuthGuard)
+    @Get('findAll')
+    async getAllMission(@Request() req) {
+        // let datetime = new Date()
+        // console.log(datetime);
+        // // let date = datetime.toLocaleDateString();
+        // let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        // let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        // let year = datetime.getFullYear();
+        // let today = year + '/' + month + '/' + date
+
+        // let id = req.user.sub;
+        // let staff = await this.staffServices.findOneByIdUser(id)
+        // if (staff == null) {
+        //     throw new HttpException("Tài khoản chưa được xác thực nhân viên", HttpStatus.BAD_REQUEST)
+        // }
+        // let staffName = staff.userName
+        let mission = await this.missionServices.findAll()
+            console.log(mission);
+            
+        return mission.map((e) =>  e.convertMissionDTO())
+    }
+
+    @UseGuards(AuthGuard)
+    @Get(':id')
+    async getDataMissionbyId(@Param('id') id: string) {
+        let mission = await this.missionServices.findOne(id)
+        return mission.convertMissionDTO();
+    }
+
 
     @UseGuards(AuthGuard)
     @Put(':id')
-    async editDataMission(@Param('id') id:string,@Request() req,@Body() data:any) {
-        let mission = await this.missionServices.editMission(id,data)
+    async editDataMission(@Param('id') id: string, @Body() data: any) {
+        let mission = await this.missionServices.editMission(id, data)
         return mission
     }
 
     @UseGuards(AuthGuard)
+    @Post('approval/:id')
+    async approvalMission(@Param('id') id: string, @Body() data: any) {
+        let mission = await this.missionServices.updateSatusMission(id, data)
+        return mission
+    }
+
+
+    @UseGuards(AuthGuard)
     @Put('cancel/:id')
-    async cancelDataMission(@Param('id') id:string,@Request() req,) {
+    async cancelDataMission(@Param('id') id: string) {
         let mission = await this.missionServices.cancelMission(id)
         return mission
     }

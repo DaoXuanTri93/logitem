@@ -1,34 +1,47 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 import { Staff } from "./staff.entity"
 import { BaseEntity } from "./base"
+import { Role } from "src/enum/role.enum"
+import { StampApproval } from "./stampApproval.entity"
+import { Status } from "src/enum/status.enum"
+import { LogApprovalDTO } from "src/logapproval/logapprovalDTO"
 
 @Entity()
-export class TimekeepingRegistation extends BaseEntity{
+export class LogApproval extends BaseEntity{
     @PrimaryGeneratedColumn()
     id : string
 
-    @ManyToOne(() => Staff, (staff) => staff.timeKeeping,{eager: true})
+    @ManyToOne(() => Staff, (staff) => staff.logApproval,{eager: true})
     @JoinColumn()
     staff: Staff
 
+    @ManyToOne(() => StampApproval, (stampApproval) => stampApproval.logApproval,{eager: true})
+    @JoinColumn()
+    stampApproval: StampApproval
+
     @Column()
-    userName: string
+    status: Status
+
+    @Column()
+    officeName: string
 
     @Column({nullable: true})
-    timeStartDay: string
+    approvalDay: string
 
     @Column({nullable: true})
-    timeEndDay: string
+    hourApproval: string
 
-    @Column({nullable: true})
-    overTimeStart: string 
 
-    @Column({nullable: true})
-    overTimeEnd: string 
-
-    @Column({default: false})
-    mission: boolean
-
-    @Column({unique:true})
-    dayTimeKeeping: String
+    convertLogApproval():LogApprovalDTO{
+        let logApprovalDTO = new LogApprovalDTO();
+        logApprovalDTO.stampApprovalId = this.stampApproval.stampApprovalId;
+        logApprovalDTO.id = this.id
+        logApprovalDTO.officeName = this.officeName
+        logApprovalDTO.approvalDay =this.approvalDay
+        logApprovalDTO.operatorName = this.staff.userName
+        logApprovalDTO.role = this.staff.userAccount.role
+        logApprovalDTO.status = this.status
+        logApprovalDTO.hourApproval = this.hourApproval
+        return logApprovalDTO;
+    }
 }

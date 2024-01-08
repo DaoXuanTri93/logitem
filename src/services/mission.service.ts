@@ -1,15 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { And, Repository } from "typeorm";
-import { TimeKeeping } from "src/models/timekeeping.entity";
-import { StaffServices } from "./staff.services";
 import { MissionRegistation } from "src/models/mission-registation.entity";
 import { Status } from "src/enum/status.enum";
 import { LogMissionServices } from "./logmission.service";
+import { StaffServices } from "./staff.service";
+import { TimekeepingServices } from "./timekeeping.service";
 
 @Injectable()
 export class MissionServices {
-    
+
     constructor(
         @InjectRepository(MissionRegistation)
         private missionRepository: Repository<MissionRegistation>,
@@ -30,7 +30,7 @@ export class MissionServices {
 
     findAllMissonNowByUser(userName, date) {
         return this.missionRepository.createQueryBuilder("missionRegistation")
-            .where({ userName: userName })
+            .where({ userName: userName})
             .andWhere("missionRegistation.endDay >=:date", { date: date })
             .getMany()
     }
@@ -48,7 +48,7 @@ export class MissionServices {
         let staff = await this.staffServices.findOneByIdUser(id)
         let missionRegistation = new MissionRegistation();
         if(data.startDay > data.endDay){
-            return new HttpException("Thời gian bắt đầu sau thời gian kết thúc ", HttpStatus.BAD_REQUEST)
+            return new HttpException("Start time after end time ", HttpStatus.BAD_REQUEST)
            }
         missionRegistation.staff = staff
         missionRegistation.startDay = data.startDay
@@ -62,7 +62,7 @@ export class MissionServices {
     async editMission(id: string, data: any) {
        let missionRegistation = await this.findOne(id)
        if(data.startDay > data.endDay){
-        return new HttpException("Thời gian bắt đầu sau thời gian kết thúc ", HttpStatus.BAD_REQUEST)
+        return new HttpException("Start time after end time", HttpStatus.BAD_REQUEST)
        }
 
        missionRegistation.statusMission == Status.APPROVED ? missionRegistation.statusMission = Status.PENDING: null
@@ -75,36 +75,33 @@ export class MissionServices {
     async cancelMission(id: string) {
         let missionRegistation = await this.findOne(id)
         if(missionRegistation == null){
-            return new HttpException("Lịch công tác không tồn tại ", HttpStatus.BAD_REQUEST)
+            return new HttpException("Work schedule does not exist ", HttpStatus.BAD_REQUEST)
         }
-        if(missionRegistation.statusMission == Status.WAITINGCONFIRM){
+        // if(missionRegistation.statusMission == Status.WAITINGCONFIRM){
             return await this.remove(id);
-        }
-        if(missionRegistation.statusMission == Status.CANCELLING || missionRegistation.statusMission == Status.PENDING){
-            if(missionRegistation.statusMission == Status.PENDING){
-                let logmission = await this.logMissionServices.findOneByMissioinId(id)
-                missionRegistation.startDay = logmission.startDay
-                missionRegistation.endDay = logmission.endDay
-            }
+        // }
+        // if(missionRegistation.statusMission == Status.CANCELLING || missionRegistation.statusMission == Status.PENDING){
+        //     if(missionRegistation.statusMission == Status.PENDING){
+        //         let logmission = await this.logMissionServices.findOneByMissioinId(id)
+        //         missionRegistation.startDay = logmission.startDay
+        //         missionRegistation.endDay = logmission.endDay
+        //     }
            
-            missionRegistation.statusMission = Status.APPROVED
+        //     missionRegistation.statusMission = Status.APPROVED
           
-            return await this.missionRepository.save(missionRegistation)
-        }
-        missionRegistation.statusMission = Status.CANCELLING
-        return await this.missionRepository.save(missionRegistation)
+        //     return await this.missionRepository.save(missionRegistation)
+        // }
+        // missionRegistation.statusMission = Status.CANCELLING
+        // return await this.missionRepository.save(missionRegistation)
      }
- 
+     async updateSatusMission(id: string, data: any) {
+        let missionRegistation = await this.findOne(id)
+        if(missionRegistation == null){
+            return new HttpException("Work schedule does not exist", HttpStatus.BAD_REQUEST)
+        }
+        missionRegistation.statusMission = data.status
+        return await this.missionRepository.save(missionRegistation)
+    }
+    
 
-
-
-    //  async updateUserbyid(id:string,res:UserDTO) {
-    //         const user = await this.timeKeepingRepository.update(id,res);
-    //         return user
-    //   }
-
-    //   async updateUser(res:Users) {
-    //         const user = await this.timeKeepingRepository.save(res);
-    //         return user
-    //   }
 }
