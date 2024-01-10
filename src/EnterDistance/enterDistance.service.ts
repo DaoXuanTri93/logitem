@@ -31,6 +31,7 @@ export class EnterDistanceService {
         let year = datetime.getFullYear();
         let today = year + '/' + month + '/' + date
         var checkXe = await this.findOneEnterDistance(userNameId)
+
         
         if (checkXe == null) {
             var data = {
@@ -41,27 +42,39 @@ export class EnterDistanceService {
              this.respository.save(data)
             return HttpStatus.OK;
         }
-
         checkXe.startingPoint = body.startingPoint
         checkXe.firstKilometerPhoto = body.firstKilometerPhoto
         checkXe.userNameId = userNameId;
         checkXe.runningDay = today;
 
+        console.log(checkXe.endPoint);
+        if(checkXe.endPoint != null ){
+            let staff = await this.staffServices.findOneByIdUser(userNameId)
+            let timekeeping = await this.timekeepingServices.findOneByUserName(staff.userName, today)
+            if (timekeeping == null) {
+                timekeeping = new TimeKeeping();
+                timekeeping.staff = staff;
+                timekeeping.userName = staff.userName;   
+                timekeeping.dayTimeKeeping = today;
+            }
+            checkXe.totalDistance = checkXe.endPoint - checkXe.startingPoint
+            timekeeping.totalDistance =  checkXe.totalDistance
+            this.timekeepingServices.save(timekeeping)
+        }
         this.respository.save(checkXe)
         return HttpStatus.OK;
     }
 
     async updateEnterDistance(body, userNameId) {
         let datetime = new Date(Date.now())
-        // let time = datetime.toLocaleTimeString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
         let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
         let year = datetime.getFullYear();
         let today = year + '/' + month + '/' + date
-        // let date = new Date(Date.now()).toLocaleDateString();
         let staff = await this.staffServices.findOneByIdUser(userNameId)
         var checkXe = await this.findOneEnterDistance(userNameId)
-        let timekeeping = await this.timekeepingServices.findOneByUserName(staff.userName, date)
+        let timekeeping = await this.timekeepingServices.findOneByUserName(staff.userName, today)
+
         if (timekeeping == null) {
             timekeeping = new TimeKeeping();
             timekeeping.staff = staff;
@@ -82,15 +95,11 @@ export class EnterDistanceService {
         timekeeping.totalDistance =  checkXe.totalDistance
         this.timekeepingServices.save(timekeeping)
         this.respository.save(checkXe);
-
         return HttpStatus.OK;
-    
-
     }
 
      async findOneEnterDistance(userNameId){
         let datetime = new Date(Date.now())
-        // let time = datetime.toLocaleTimeString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
         let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
         let year = datetime.getFullYear();

@@ -49,7 +49,7 @@ export class TimeKeeping {
         timeKeepingDTO.userName = this.userName
         timeKeepingDTO.officeName = this.staff.affiliatedOffice.baseName
         timeKeepingDTO.officeId = this.staff.affiliatedOffice.officeId
-        timeKeepingDTO.area = this.staff.area.areaName
+        timeKeepingDTO.area = this.staff.affiliatedOffice.area.areaName
         timeKeepingDTO.timeStartDay = this.timeStartDay
         timeKeepingDTO.timeEndDay = this.timeEndDay
         timeKeepingDTO.overTimeStart = this.overTimeStart
@@ -64,7 +64,7 @@ export class TimeKeeping {
         driverDTO.userName = this.userName
         driverDTO.staffId = this.staff.staffId.toString()
         driverDTO.dateOfBirth = this.staff.dateOfBirth
-        driverDTO.area = this.staff.area.areaName
+        driverDTO.area = this.staff.affiliatedOffice.area.areaName
         driverDTO.mission = this.mission.toString()
         driverDTO.phone = this.staff.telephone
         return driverDTO
