@@ -29,7 +29,7 @@ export class TimekeepingServices {
 
     findAllByMissionDay(startday, endDay) {
         return this.timeKeepingRepository.createQueryBuilder("time_keeping")
-            .where("time_keeping.dayTimeKeeping >=:startday and time_keeping.dayTimeKeeping <= :endDay", {startday : startday, endDay:endDay })
+            .where("time_keeping.dayTimeKeeping >=:startday and time_keeping.dayTimeKeeping <= :endDay", { startday: startday, endDay: endDay })
             .getMany()
     }
     findAllByDriverAndOffice(officeName: string) {
@@ -55,8 +55,8 @@ export class TimekeepingServices {
         return this.timeKeepingRepository.save(timekeep)
     }
     async checkIn(req: any, data: any) {
-        let datetime = new Date(Date.now())
-        let time = datetime.toLocaleTimeString();
+        let datetime = new Date(new Date().toLocaleString())
+        let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString() + ":" + datetime.getSeconds().toString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
         let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
         let year = datetime.getFullYear();
@@ -64,13 +64,15 @@ export class TimekeepingServices {
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
         let mission = await this.missionServices.findAllMissonByUser(staff.userName, today)
+        console.log(mission);
+        console.log(data);
 
-        
-        if (mission.length == 0 && data.check == false || mission.length!= 0 ? mission[0].statusMission != Status.APPROVED: data.check == false) {
+
+        if (mission.length == 0 && data.check == false) {
             throw new HttpException("You are outside the timekeeping range ", HttpStatus.BAD_REQUEST)
         }
         let timekeeping = await this.findOneByUserName(staff.userName, today)
-        
+
         if (timekeeping == null) {
             timekeeping = new TimeKeeping();
         }
@@ -87,8 +89,8 @@ export class TimekeepingServices {
     }
 
     async checkOut(req: any, data: any) {
-        let datetime = new Date(Date.now())
-        let time = datetime.toLocaleTimeString();
+        let datetime = new Date(new Date().toLocaleString())
+        let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString() + ":" + datetime.getSeconds().toString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
         let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
         let year = datetime.getFullYear();
@@ -96,10 +98,10 @@ export class TimekeepingServices {
 
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
-        
+
         let mission = await this.missionServices.findAllMissonByUser(staff.userName, today)
-        
-        if ((mission.length == 0 && data.check == false) ||mission.length!= 0 ? mission[0].statusMission != Status.APPROVED: data.check == false) {
+
+        if (mission.length == 0 && data.check == false) {
             throw new HttpException("You are outside the timekeeping range ", HttpStatus.BAD_REQUEST)
         }
         let staffName = staff.userName
@@ -129,8 +131,8 @@ export class TimekeepingServices {
     }
 
     async checkInOverTime(req: any, data: any) {
-        let datetime = new Date(Date.now())
-        let time = datetime.toLocaleTimeString();
+        let datetime = new Date(new Date().toLocaleString())
+        let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString() + ":" + datetime.getSeconds().toString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
         let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
         let year = datetime.getFullYear();
@@ -166,8 +168,8 @@ export class TimekeepingServices {
     }
 
     async checkOutOverTime(req: any, data: any) {
-        let datetime = new Date(Date.now())
-        let time = datetime.toLocaleTimeString();
+        let datetime = new Date(new Date().toLocaleString())
+        let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString() + ":" + datetime.getSeconds().toString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
         let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
         let year = datetime.getFullYear();
@@ -230,10 +232,10 @@ export class TimekeepingServices {
         let staff = driver.staff;
         staff.userName = data.userName
         staff.dateOfBirth = data.dateOfBirth
-        let area = await this.areaRepository.findOneBy({areaName : data.area})
-        if(area !=null){
+        let area = await this.areaRepository.findOneBy({ areaName: data.area })
+        if (area != null) {
             staff.area = area
         }
-         return await this.staffServices.save(staff)
+        return await this.staffServices.save(staff)
     }
 }

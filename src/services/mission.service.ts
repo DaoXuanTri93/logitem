@@ -61,7 +61,7 @@ export class MissionServices {
 
     async editMission(id: string, data: any) {
        let missionRegistation = await this.findOne(id)
-       if(data.startDay > data.endDay){
+       if(data.startDay > data.endDay){                         
         return new HttpException("Start time after end time", HttpStatus.BAD_REQUEST)
        }
 

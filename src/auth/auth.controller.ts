@@ -3,6 +3,7 @@ import { AuthService } from 'src/services/auth.service';
 import { AuthGuard } from './authGuard';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { log } from 'console';
 
 @Controller('auth')
 export class AuthController {
@@ -11,6 +12,13 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Body() signInDto: Record<string, any>,@Res({passthrough : true}) response : Response) {
+
+    let datetime = new Date(new Date().toLocaleString())
+    let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString()+ ":" + datetime.getSeconds().toString();
+    console.log(time);
+    let datetime1 = new Date(Date.now())
+    let time1 = datetime1.toLocaleTimeString()
+    console.log(time1);
     return this.authService.signIn(signInDto,response);
   }
 

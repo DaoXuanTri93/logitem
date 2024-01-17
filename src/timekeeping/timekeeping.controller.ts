@@ -12,8 +12,9 @@ export class TimekeepingController {
     @UseGuards(AuthGuard)
     @Get()
     async getdataTimeKeepingToDay(@Request() req) {
-        let datetime = new Date(Date.now())
-        let time = datetime.toLocaleTimeString();
+
+        let datetime = new Date(new Date().toLocaleString())
+        let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString()+ ":" + datetime.getSeconds().toString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
         let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
         let year = datetime.getFullYear();
