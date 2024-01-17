@@ -27,7 +27,7 @@ export class EnterDistanceService {
         let datetime = new Date(Date.now())
         // let time = datetime.toLocaleTimeString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
-        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate();
         let year = datetime.getFullYear();
         let today = year + '/' + month + '/' + date
         var checkXe = await this.findOneEnterDistance(userNameId)
@@ -66,7 +66,7 @@ export class EnterDistanceService {
     async updateEnterDistance(body, userNameId) {
         let datetime = new Date(Date.now())
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
-        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate();
         let year = datetime.getFullYear();
         let today = year + '/' + month + '/' + date
         let staff = await this.staffServices.findOneByIdUser(userNameId)
@@ -99,7 +99,7 @@ export class EnterDistanceService {
      async findOneEnterDistance(userNameId){
         let datetime = new Date(Date.now())
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
-        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate();
         let year = datetime.getFullYear();
         let today = year + '/' + month + '/' + date
         return await this.respository.findOneBy({runningDay : today, userNameId: {id : userNameId}});;

@@ -12,11 +12,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Body() signInDto: Record<string, any>,@Res({passthrough : true}) response : Response) {
-
-    let datetime = new Date(new Date().toLocaleString())
-    let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString()+ ":" + datetime.getSeconds().toString();
-    let datetime1 = new Date(Date.now())
-    let time1 = datetime1.toLocaleTimeString()
     return this.authService.signIn(signInDto,response);
   }
 

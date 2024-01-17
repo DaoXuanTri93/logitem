@@ -58,7 +58,7 @@ export class TimekeepingServices {
         let datetime = new Date(new Date().toLocaleString())
         let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString() + ":" + datetime.getSeconds().toString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
-        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate();
         let year = datetime.getFullYear();
         let today = year + '/' + month + '/' + date
         let id = req.user.sub;
@@ -89,7 +89,7 @@ export class TimekeepingServices {
         let datetime = new Date(new Date().toLocaleString())
         let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString() + ":" + datetime.getSeconds().toString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
-        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate();
         let year = datetime.getFullYear();
         let today = year + '/' + month + '/' + date
 
@@ -131,7 +131,7 @@ export class TimekeepingServices {
         let datetime = new Date(new Date().toLocaleString())
         let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString() + ":" + datetime.getSeconds().toString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
-        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate();
         let year = datetime.getFullYear();
         let today = year + '/' + month + '/' + date
         let id = req.user.sub;
@@ -168,7 +168,7 @@ export class TimekeepingServices {
         let datetime = new Date(new Date().toLocaleString())
         let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString() + ":" + datetime.getSeconds().toString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
-        let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
+        let date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate();
         let year = datetime.getFullYear();
         let today = year + '/' + month + '/' + date
         let id = req.user.sub;
