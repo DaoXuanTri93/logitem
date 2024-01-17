@@ -46,8 +46,6 @@ export class EnterDistanceService {
         checkXe.firstKilometerPhoto = body.firstKilometerPhoto
         checkXe.userNameId = userNameId;
         checkXe.runningDay = today;
-
-        console.log(checkXe.endPoint);
         if(checkXe.endPoint != null ){
             let staff = await this.staffServices.findOneByIdUser(userNameId)
             let timekeeping = await this.timekeepingServices.findOneByUserName(staff.userName, today)

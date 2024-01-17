@@ -229,7 +229,8 @@ export class TimekeepingServices {
         let driver = await this.findOne(id)
         let staff = driver.staff;
         staff.userName = data.userName
-        staff.dateOfBirth = data.dateOfBirth
+        staff.dateOfBirth = "10/10/2020"
+
         let area = await this.areaRepository.findOneBy({areaName : data.area})
         if(area !=null){
             staff.area = area
