@@ -23,9 +23,9 @@ export class OfficeController {
 
     @UseGuards(AuthGuard)
     @Post()
-    createOffice(@Body() res: any) {
-        let office =  this.officeServices.findOfficeByBaseName(res.baseName)
-        if(office!= null){
+    async createOffice(@Body() res: any) {
+        let office = await this.officeServices.findOfficeByBaseName(res.baseName)
+        if(office != null){
             return this.officeServices.createOffice(res)
         }
         else

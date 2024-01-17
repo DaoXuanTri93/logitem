@@ -38,21 +38,13 @@ export class MissionController {
     @UseGuards(AuthGuard)
     @Get('findAll')
     async getAllMission(@Request() req) {
-        // let datetime = new Date()
-        // console.log(datetime);
-        // // let date = datetime.toLocaleDateString();
-        // let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
-        // let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
-        // let year = datetime.getFullYear();
-        // let today = year + '/' + month + '/' + date
-
-        // let id = req.user.sub;
-        // let staff = await this.staffServices.findOneByIdUser(id)
-        // if (staff == null) {
-        //     throw new HttpException("Tài khoản chưa được xác thực nhân viên", HttpStatus.BAD_REQUEST)
-        // }
-        // let staffName = staff.userName
-        let mission = await this.missionServices.findAll()
+        let id = req.user.sub;
+        let staff = await this.staffServices.findOneByIdUser(id)
+        
+        if(staff == null){
+            throw new HttpException("The account has not been verified by staff",HttpStatus.BAD_REQUEST)
+        }
+        let mission = await this.missionServices.findOneByStaff(staff)
             
         return mission.map((e) =>  e.convertMissionDTO())
     }

@@ -6,6 +6,7 @@ import { Status } from "src/enum/status.enum";
 import { LogMissionServices } from "./logmission.service";
 import { StaffServices } from "./staff.service";
 import { TimekeepingServices } from "./timekeeping.service";
+import { Role } from "src/enum/role.enum";
 
 @Injectable()
 export class MissionServices {
@@ -41,6 +42,13 @@ export class MissionServices {
             .andWhere("missionRegistation.endDay >=:date and missionRegistation.startDay <= :date", {date: date })
             .andWhere("missionRegistation.statusMission = 'APPROVED'")
             .getMany()
+    }
+
+    async findOneByStaff(staff: any) {
+        if (staff.userAccount.role == Role.Admin) {
+            return await this.missionRepository.find();
+        }
+        return await this.missionRepository.findBy({staff:{affiliatedOffice:{officeId:staff.affiliatedOffice.officeId}}});
     }
 
     async checkMission(req: any, data: any) {

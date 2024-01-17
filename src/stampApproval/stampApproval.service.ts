@@ -39,7 +39,6 @@ export class StampApprovalService {
 
     async findAllByStaff(req: any) {
         let id = req.user.sub;
-
         let staff = await this.staffServices.findOneByIdUser(id)
         if (staff.userAccount.role == Role.Admin) {
             return await this.repository.find();
