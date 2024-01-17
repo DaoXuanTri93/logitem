@@ -64,9 +64,6 @@ export class TimekeepingServices {
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
         let mission = await this.missionServices.findAllMissonByUser(staff.userName, today)
-        console.log(mission);
-        console.log(data);
-
 
         if (mission.length == 0 && data.check == false) {
             throw new HttpException("You are outside the timekeeping range ", HttpStatus.BAD_REQUEST)

@@ -15,10 +15,8 @@ export class AuthController {
 
     let datetime = new Date(new Date().toLocaleString())
     let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString()+ ":" + datetime.getSeconds().toString();
-    console.log(time);
     let datetime1 = new Date(Date.now())
     let time1 = datetime1.toLocaleTimeString()
-    console.log(time1);
     return this.authService.signIn(signInDto,response);
   }
 

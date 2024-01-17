@@ -39,7 +39,6 @@ export class MissionController {
     @Get('findAll')
     async getAllMission(@Request() req) {
         // let datetime = new Date()
-        // console.log(datetime);
         // // let date = datetime.toLocaleDateString();
         // let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
         // let date = datetime.getDay() < 10 ? '0' + datetime.getDay() : datetime.getDay();
