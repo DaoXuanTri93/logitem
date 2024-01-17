@@ -23,14 +23,31 @@ export class OfficeController {
 
     @UseGuards(AuthGuard)
     @Post()
-    createOffice(@Body() res: any) {
-        return this.officeServices.createOffice(res)
+    async createOffice(@Body() res: any) {
+        let office = await this.officeServices.findOfficeByBaseName(res.baseName)
+        if(office!= null){
+            return this.officeServices.createOffice(res)
+        }
+        else
+        {
+        return new HttpException("Office name already exists",HttpStatus.BAD_REQUEST)
+        }
+
+        
     }
 
     @UseGuards(AuthGuard)
     @Put(':id')
-    updateOffice(@Param('id') id: string, @Body() res: OfficeDTO) {
-        return this.officeServices.updateOfficebyid(id, res)
+    async updateOffice(@Param('id') id: string, @Body() res: OfficeDTO) {
+        let office = await this.officeServices.findOfficeByBaseName(res.baseName)
+        if(office!= null){
+            return this.officeServices.updateOfficebyid(id, res)
+        }
+        else
+        {
+        return new HttpException("Office name already exists",HttpStatus.BAD_REQUEST)
+        }
+      
     }
 
     @UseGuards(AuthGuard)
@@ -46,7 +63,7 @@ export class OfficeController {
         if(office == null){
             throw new HttpException("The account does not belong to any style",HttpStatus.BAD_REQUEST)
         }
-        return office
+        return office.map((e)=>e.convertOfficeDTO())
     }
     
     @Get(':id')
