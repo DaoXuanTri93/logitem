@@ -77,8 +77,8 @@ export class Office{
         officedto.drivingRoute = this.drivingRoute;
         officedto.vehicleInformation = this.vehicleInformation;
         officedto.drivingSchedule = this.drivingSchedule
+        officedto.coordinate = this.coordinate
         return officedto;
-
     }
 
 }

@@ -12,12 +12,6 @@ export class OfficeController {
     @UseGuards(AuthGuard)
     @Get()
     async getAllOffice() {
-        // var data = await this.officeServices.findAll()
-        // if (data.length > 0) {
-        //     var response = data.map((item)=> item.convertOfficeDTO());
-        //  } else {
-        //     return data;
-        // }
         return await this.officeServices.findAll();
     }
 
@@ -25,7 +19,7 @@ export class OfficeController {
     @Post()
     async createOffice(@Body() res: any) {
         let office = await this.officeServices.findOfficeByBaseName(res.baseName)
-        if(office != null){
+        if(office!= null){
             return this.officeServices.createOffice(res)
         }
         else
@@ -38,8 +32,8 @@ export class OfficeController {
 
     @UseGuards(AuthGuard)
     @Put(':id')
-    updateOffice(@Param('id') id: string, @Body() res: OfficeDTO) {
-        let office =  this.officeServices.findOfficeByBaseName(res.baseName)
+    async updateOffice(@Param('id') id: string, @Body() res: OfficeDTO) {
+        let office = await this.officeServices.findOfficeByBaseName(res.baseName)
         if(office!= null){
             return this.officeServices.updateOfficebyid(id, res)
         }

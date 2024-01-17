@@ -62,6 +62,10 @@ export class AuthService {
     if(data.password != body.passwordOld){
       throw new UnauthorizedException('The old password is incorrect')
     }
+
+    if(data.password == body.passwordOld){
+      throw new UnauthorizedException('This password already exists')
+    }
       data.password = body.passwordNew;
       return await this.usersService.updatePassword(data);
   }
