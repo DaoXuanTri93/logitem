@@ -63,7 +63,7 @@ export class AuthService {
       throw new UnauthorizedException('The old password is incorrect')
     }
 
-    if(data.password == body.passwordOld){
+    if(data.password == body.passwordNew){
       throw new UnauthorizedException('This password already exists')
     }
       data.password = body.passwordNew;
