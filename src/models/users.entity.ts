@@ -1,8 +1,9 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Staff } from "./staff.entity";
 import { Role } from "src/enum/role.enum";
 import { EnterDistance } from "./enterDistance.entity";
 import { SearchUserDTO } from "src/users/users.dto";
+import { Permission } from "./permission.entity";
 @Entity()
 export class Users {
   @PrimaryGeneratedColumn()
@@ -26,14 +27,12 @@ export class Users {
   @OneToMany(() => EnterDistance, (busSchedule) => busSchedule.userNameId)
   busSchedule?: EnterDistance
 
-
   converUsersToSearchDTO(): SearchUserDTO {
     let searchUserDTO = new SearchUserDTO();
 
     searchUserDTO.id = this.id
     searchUserDTO.role = this.role
     searchUserDTO.username = this.username
-
     return searchUserDTO
   }
 }

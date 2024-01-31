@@ -13,11 +13,12 @@ import { MissionServices } from "src/services/mission.service";
 import { MissionController } from "./mission.controller";
 import { LogMissionModule } from "src/logmission/mission.module";
 import { TimeKeepingModule } from "src/timekeeping/timekeeping.module";
+import { Permission } from "src/models/permission.entity";
 
 
 @Module({
     imports:[
-        TypeOrmModule.forFeature([MissionRegistation]),
+        TypeOrmModule.forFeature([MissionRegistation,Permission]),
         StaffModule,
         LogMissionModule,
         JwtModule.register({

@@ -7,6 +7,8 @@ import { MissionRegistation } from "./mission-registation.entity"
 import { StaffUsersDTO } from "src/staff/staffuser.dto"
 import { LogApproval } from "./timekeeping-registation.entity"
 import { Area } from "./area.entity"
+import { Permission } from "./permission.entity"
+import { DriverPerDTO } from "src/staff/driverPermission.dto"
 
 @Entity()
 export class Staff {
@@ -49,6 +51,9 @@ export class Staff {
     @OneToMany(()=> StampApproval, (stampApproval) => stampApproval.staff)
     stampApproval: StampApproval 
 
+    @OneToMany(()=> Permission, (permission) => permission.staff)
+    permission: Permission 
+
     @OneToMany(()=> TimeKeeping, (timeKeeping) => timeKeeping.staff)
     timeKeeping: TimeKeeping 
 
@@ -70,5 +75,15 @@ export class Staff {
         staffUsersDTO.role = this.userAccount.role
         staffUsersDTO.MAC = this.userAccount.MAC
          return staffUsersDTO
+     }
+
+     converDriverToDTO(): DriverPerDTO{
+        let driverPerDTO = new DriverPerDTO()
+        driverPerDTO.id = this.staffId
+        driverPerDTO.userAccount = this.userAccount.username
+        driverPerDTO.userName = this.userName
+        driverPerDTO.edit=false
+        driverPerDTO.approve=false
+         return driverPerDTO
      }
 }

@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { SearchUserDTO, UserDTO } from "src/users/users.dto";
 import { Users } from "src/models/users.entity";
 import { Repository } from "typeorm";
+import { Permission } from "src/models/permission.entity";
 
 @Injectable()
 export class UserServices {

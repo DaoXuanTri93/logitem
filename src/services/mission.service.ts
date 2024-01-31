@@ -7,6 +7,7 @@ import { LogMissionServices } from "./logmission.service";
 import { StaffServices } from "./staff.service";
 import { TimekeepingServices } from "./timekeeping.service";
 import { Role } from "src/enum/role.enum";
+import { Permission } from "src/models/permission.entity";
 
 @Injectable()
 export class MissionServices {
@@ -14,6 +15,8 @@ export class MissionServices {
     constructor(
         @InjectRepository(MissionRegistation)
         private missionRepository: Repository<MissionRegistation>,
+        @InjectRepository(Permission)
+        private permissionRepository: Repository<Permission>,
         readonly staffServices: StaffServices,
         readonly logMissionServices: LogMissionServices
     ) { }
@@ -104,8 +107,16 @@ export class MissionServices {
      }
      async updateSatusMission(id: string, data: any) {
         let missionRegistation = await this.findOne(id)
+           let permission =await this.staffServices.findPermissionByStaffId(id)
+           let check =false;
+           if(permission!=null){
+            permission.approveUsers.map((e)=>{if(e==missionRegistation.staff.staffId)check=true})
+           }
         if(missionRegistation == null){
             return new HttpException("Work schedule does not exist", HttpStatus.BAD_REQUEST)
+        }
+        if(check == false){
+            return new HttpException("Account doesn't approve", HttpStatus.BAD_REQUEST)
         }
         missionRegistation.statusMission = data.status
         return await this.missionRepository.save(missionRegistation)
