@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Users } from "./users.entity"
-import { EnterDistanceDTO } from "src/EnterDistance/enterDistance.dto"
+import { EnterDistanceDTO, EnterDistanceImageDTO } from "src/EnterDistance/enterDistance.dto"
 
 @Entity()
 export class EnterDistance {
@@ -38,5 +38,12 @@ export class EnterDistance {
         enterDistanceDTO.totalDistance = this.totalDistance
         enterDistanceDTO.runningDay = this.runningDay
         return enterDistanceDTO
+    }
+
+    converDistanceImage():EnterDistanceImageDTO{
+        let enterDistanceImageDTO = new EnterDistanceImageDTO();
+        enterDistanceImageDTO.firstKilometerPhoto = this.firstKilometerPhoto
+        enterDistanceImageDTO.lastKilometerPhoto = this.lastKilometerPhoto
+        return enterDistanceImageDTO
     }
 }

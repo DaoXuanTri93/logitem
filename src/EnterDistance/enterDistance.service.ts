@@ -5,6 +5,7 @@ import { EnterDistance } from "src/models/enterDistance.entity";
 import { TimeKeeping } from "src/models/timekeeping.entity";
 import { StaffServices } from "src/services/staff.service";
 import { TimekeepingServices } from "src/services/timekeeping.service";
+import { UserServices } from "src/services/user.service";
 import { Repository } from "typeorm";
 
 
@@ -16,7 +17,9 @@ export class EnterDistanceService {
         @InjectRepository(EnterDistance)
         private readonly respository: Repository<EnterDistance>,
         readonly staffServices: StaffServices,
-        readonly timekeepingServices: TimekeepingServices,) { 
+        readonly timekeepingServices: TimekeepingServices,
+        readonly userService: UserServices,
+        ) { 
             
         }
 
@@ -104,6 +107,18 @@ export class EnterDistanceService {
         let today = year + '/' + month + '/' + date
         return await this.respository.findOneBy({runningDay : today, userNameId: {id : userNameId}});;
         
+    }
+
+    async findByIdEnterDistance(req){
+        let userNameId = req['userNameId'];
+        let runningDay = req['runningDay'];
+        let staffUserId = await this.staffServices.findOneByUserName(userNameId);
+        let userId = staffUserId.userAccount.id;
+       let distanceImage =  await this.respository.findOneBy({userNameId : {id : userId}, runningDay: runningDay});
+       if(distanceImage == null){
+        throw new HttpException('distanceImage not found',HttpStatus.BAD_REQUEST);
+       }
+        return distanceImage;
     }
 
 }

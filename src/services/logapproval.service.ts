@@ -37,7 +37,7 @@ export class LogApprovalServices {
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
         if (staff.userAccount.role == Role.Admin) {
-            return await this.findAll();
+            return await (await this.findAll()).map((e)=>e.convertLogApproval());
         }
         
         return (await this.findAllByOfficeName(staff.affiliatedOffice.baseName)).map((e)=>e.convertLogApproval());

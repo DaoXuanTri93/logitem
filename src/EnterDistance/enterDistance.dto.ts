@@ -10,3 +10,9 @@ export class EnterDistanceDTO {
     runningDay: string
    
   }
+
+  export class EnterDistanceImageDTO{
+    firstKilometerPhoto: string
+    lastKilometerPhoto: string 
+  }
+  

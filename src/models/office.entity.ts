@@ -72,7 +72,7 @@ export class Office{
         officedto.baseName = this.baseName;
         officedto.address = this.address;
         officedto.telephoneNumber = this.telephoneNumber;
-        officedto.manager = this.baseName;
+        officedto.manager = this.manager;
         officedto.driverInformation = this.driverInformation;
         officedto.drivingRoute = this.drivingRoute;
         officedto.vehicleInformation = this.vehicleInformation;

@@ -59,7 +59,7 @@ export class MissionServices {
         let staff = await this.staffServices.findOneByIdUser(id)
         let missionRegistation = new MissionRegistation();
         if(data.startDay > data.endDay){
-            return new HttpException("Start time after end time ", HttpStatus.BAD_REQUEST)
+            throw new HttpException("Start time after end time ", HttpStatus.BAD_REQUEST)
            }
         missionRegistation.staff = staff
         missionRegistation.startDay = data.startDay
@@ -73,7 +73,7 @@ export class MissionServices {
     async editMission(id: string, data: any) {
        let missionRegistation = await this.findOne(id)
        if(data.startDay > data.endDay){                         
-        return new HttpException("Start time after end time", HttpStatus.BAD_REQUEST)
+        throw new HttpException("Start time after end time", HttpStatus.BAD_REQUEST)
        }
 
        missionRegistation.statusMission == Status.APPROVED ? missionRegistation.statusMission = Status.PENDING: null
@@ -86,7 +86,7 @@ export class MissionServices {
     async cancelMission(id: string) {
         let missionRegistation = await this.findOne(id)
         if(missionRegistation == null){
-            return new HttpException("Work schedule does not exist ", HttpStatus.BAD_REQUEST)
+            throw new HttpException("Work schedule does not exist ", HttpStatus.BAD_REQUEST)
         }
         // if(missionRegistation.statusMission == Status.WAITINGCONFIRM){
             return await this.remove(id);
@@ -113,10 +113,10 @@ export class MissionServices {
             permission.approveUsers.map((e)=>{if(e==missionRegistation.staff.staffId)check=true})
            }
         if(missionRegistation == null){
-            return new HttpException("Work schedule does not exist", HttpStatus.BAD_REQUEST)
+            throw new HttpException("Work schedule does not exist", HttpStatus.BAD_REQUEST)
         }
         if(check == false){
-            return new HttpException("Account doesn't approve", HttpStatus.BAD_REQUEST)
+            throw new HttpException("Account doesn't approve", HttpStatus.BAD_REQUEST)
         }
         missionRegistation.statusMission = data.status
         return await this.missionRepository.save(missionRegistation)
