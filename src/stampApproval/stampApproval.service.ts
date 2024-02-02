@@ -73,7 +73,7 @@ export class StampApprovalService {
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
         if (staff == null) {
-            return new HttpException("Driver does not exist", HttpStatus.BAD_REQUEST)
+            throw new HttpException("Driver does not exist", HttpStatus.BAD_REQUEST)
         }
         let stampApproval = new StampApproval();
 
@@ -100,7 +100,7 @@ export class StampApprovalService {
         let today = year + '/' + month + '/' + date
         let stampApproval = await this.repository.findOneBy({ stampApprovalId: id })
         if (stampApproval == null) {
-            return new HttpException("No information found", HttpStatus.BAD_REQUEST)
+            throw new HttpException("No information found", HttpStatus.BAD_REQUEST)
         }
         let logApproval = new LogApproval();
         logApproval.staff = staff

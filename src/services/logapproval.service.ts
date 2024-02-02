@@ -40,6 +40,6 @@ export class LogApprovalServices {
             return await this.findAll();
         }
         
-        return (await this.findAllByOfficeName(staff.affiliatedOffice.baseName)).map((e)=>e.convertLogApproval());
+        return await this.findAllByOfficeName(staff.affiliatedOffice.baseName);
     }
 }

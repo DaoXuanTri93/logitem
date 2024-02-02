@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards ,Request} from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, UseGuards, Request } from "@nestjs/common";
 import { StaffUsersDTO } from "src/staff/staffuser.dto";
 import { StaffServices } from "src/services/staff.service";
 import { Staff } from "src/models/staff.entity";
@@ -53,10 +53,10 @@ export class StaffController {
     @Get(':id')
     async getDetailStaffUserbyId(@Param('id') id: string) {
         console.log((await this.staffServices.findOne(id)).converStaffToDTO());
-        
+
         return (await this.staffServices.findOne(id)).converStaffToDTO()
     }
-    
+
     @UseGuards(AuthGuard)
     @Put(':id')
     async updateStaffUser(@Param('id') id: string, @Body() res: StaffUsersDTO) {
@@ -84,20 +84,20 @@ export class StaffController {
 
     @UseGuards(AuthGuard)
     @Get("driver/:id")
-    async getAllDriver(@Request() req,@Param('id') id: string,) {
-        return await this.staffServices.findAllByDriver(req,id);
+    async getAllDriver(@Request() req, @Param('id') id: string,) {
+        return await this.staffServices.findAllByDriver(req, id);
     }
 
     @UseGuards(AuthGuard)
     @Get("permission/:id")
-    async getStaff(@Request() req,@Param('id') id: string,) {
-        return (await this.staffServices.findPermissionByStaffId(id)).converDriverToDTO();
+    async getStaff(@Request() req, @Param('id') id: string,) {
+        return await this.staffServices.findPermissionByStaffId(id) != null ? (await this.staffServices.findPermissionByStaffId(id)).converDriverToDTO() : null;
     }
-    
+
     @UseGuards(AuthGuard)
     @Put('driver/:id')
     async settingPermission(@Param('id') id: string, @Body() req: any) {
-        this.staffServices.settingPermission(req,id)
+        this.staffServices.settingPermission(req, id)
     }
 
 }

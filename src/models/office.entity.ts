@@ -43,6 +43,9 @@ export class Office{
     @Column({ nullable: true })
     coordinate : string
 
+    @Column({ default: false })
+    deleted : boolean
+
     @Column({ nullable: true })
     engravingRangeRadius : string
 
