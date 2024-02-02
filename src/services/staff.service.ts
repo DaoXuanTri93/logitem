@@ -24,8 +24,8 @@ export class StaffServices {
         return await this.staffRepository.find();
     }
 
-    async findPermissionByStaffId(id:string) {
-        return await this.permissionRepository.findOneBy({staff:{staffId:id}});
+    async findPermissionByStaffId(id: string) {
+        return await this.permissionRepository.findOneBy({ staff: { staffId: id } });
     }
 
     async findAllByStaff(req: any) {
@@ -47,25 +47,26 @@ export class StaffServices {
         let editUsers = []
         let approveUsers = []
         if (permission != null) {
-            editUsers = permission.editUsers
-            approveUsers = permission.approveUsers
+            permission.editUsers != null ? editUsers = permission.editUsers : editUsers = []
+            permission.approveUsers  != null ? approveUsers = permission.approveUsers : approveUsers = []
         }
-    
+            
         let listDriver: DriverPerDTO[] = []
         let staffs = await this.findAllDriverByOfficeName(staff.affiliatedOffice.baseName)
+
         staffs.map((s) => {
-            let driver: DriverPerDTO = new DriverPerDTO(); 
+            let driver: DriverPerDTO = new DriverPerDTO();
             driver = s.converDriverToDTO();
             if (approveUsers.length > 0) {
-                approveUsers.map((d) =>  {
-                    if(d == s.userAccount.id){
+                approveUsers.map((d) => {
+                    if (d == s.userAccount.id) {
                         driver.approve = true
                     }
                 })
             }
-            if (editUsers.length > 0) {
+            if (editUsers.length > 0) { 
                 editUsers.map((d) => {
-                    if(d == s.userAccount.id){
+                    if (d == s.userAccount.id) {
                         driver.edit = true
                     }
                 })
@@ -73,7 +74,7 @@ export class StaffServices {
             listDriver.push(driver)
         })
         console.log(listDriver);
-        
+
         return listDriver
     }
 
@@ -131,10 +132,11 @@ export class StaffServices {
 
     async settingPermission(req: any, idDriver: string) {
         let staff = await this.findOneByIdUser(idDriver)
-        let permission = await this.permissionRepository.findOneBy({staff: { staffId: idDriver } })
-    
-        let editUsers:any = []
-        let approveUsers:any = []
+        let permission = await this.permissionRepository.findOneBy({ staff: { staffId: idDriver } })
+        console.log(req);
+        
+        let editUsers: any = []
+        let approveUsers: any = []
         if (permission == null) {
             permission = new Permission()
         }
@@ -144,12 +146,12 @@ export class StaffServices {
             let user = await this.userServices.findOneByUserName(e)
             editUsers.push(user.id)
         })
+        
         dataApprove.map(async (e) => {
             let user = await this.userServices.findOneByUserName(e)
             approveUsers.push(user.id)
-            console.log(approveUsers);
         })
-    
+
         if (req.approve == true && req.multiapprove == false) {
             permission.approveUsers = approveUsers
         }
