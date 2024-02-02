@@ -11,7 +11,7 @@ export class LogApprovalController {
     @UseGuards(AuthGuard)
     @Get()
     async findAll(@Request() req){
-        return (await this.logApprovalServices.findAllOfficeByStaff(req));
+        return (await this.logApprovalServices.findAllOfficeByStaff(req)).map((e)=>e.convertLogApproval());
     }
 
 } 

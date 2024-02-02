@@ -113,17 +113,26 @@ export class MissionServices {
         // missionRegistation.statusMission = Status.CANCELLING
         // return await this.missionRepository.save(missionRegistation)
     }
-    async updateSatusMission(id: string, data: any) {
+    async updateSatusMission(id: string, data: any, req: any) {
+        console.log(data);
+        let idsales = req.user.sub;
+        let check = false;
+        let staff = await this.staffServices.findOneByIdUser(idsales)
+        if (staff.userAccount.role == Role.Admin) {
+                check =true;
+        }
         let missionRegistation = await this.findOne(id)
-           let permission =await this.staffServices.findPermissionByStaffId(id)
-           let check =false;
-           if(permission!=null){
-            permission.approveUsers.map((e)=>{if(e==missionRegistation.staff.staffId)check=true})
-           }
-        if(missionRegistation == null){
+        let permission = await this.staffServices.findPermissionByStaffId(id)
+       
+        if (permission != null) {
+            permission.approveUsers.map((e) => { if (e == missionRegistation.staff.staffId) check = true })
+        }
+        if (missionRegistation == null) {
+            console.log("1");
             throw new HttpException("Work schedule does not exist", HttpStatus.BAD_REQUEST)
         }
-        if(check == false){
+        if (check == false) {
+            console.log("2");
             throw new HttpException("Account doesn't approve", HttpStatus.BAD_REQUEST)
         }
         missionRegistation.statusMission = data.status

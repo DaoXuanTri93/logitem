@@ -47,8 +47,8 @@ export class StaffServices {
         let editUsers = []
         let approveUsers = []
         if (permission != null) {
-            editUsers = permission.editUsers
-            approveUsers = permission.approveUsers
+            permission.editUsers != null ? editUsers = permission.editUsers : editUsers = []
+            permission.approveUsers  != null ? approveUsers = permission.approveUsers : approveUsers = []
         }
     
         let listDriver: DriverPerDTO[] = []
@@ -72,7 +72,6 @@ export class StaffServices {
             }
             listDriver.push(driver)
         })
-        console.log(listDriver);
         
         return listDriver
     }
@@ -147,7 +146,6 @@ export class StaffServices {
         dataApprove.map(async (e) => {
             let user = await this.userServices.findOneByUserName(e)
             approveUsers.push(user.id)
-            console.log(approveUsers);
         })
     
         if (req.approve == true && req.multiapprove == false) {

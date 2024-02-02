@@ -52,8 +52,6 @@ export class StaffController {
     @UseGuards(AuthGuard)
     @Get(':id')
     async getDetailStaffUserbyId(@Param('id') id: string) {
-        console.log((await this.staffServices.findOne(id)).converStaffToDTO());
-
         return (await this.staffServices.findOne(id)).converStaffToDTO()
     }
 
