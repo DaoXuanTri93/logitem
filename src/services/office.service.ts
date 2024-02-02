@@ -26,10 +26,10 @@ export class OfficeServices {
 
     async findOneByIdStaff(staff: any) {
         if (staff.userAccount.role == Role.Admin) {
-            return await this.officeRepository.find();
+            return await this.officeRepository.findBy({deleted:false});
         }
 
-        return await this.officeRepository.findBy({staff:{staffId:staff.staffId}});
+        return await this.officeRepository.findBy({staff:{staffId:staff.staffId},deleted:false});
     }
     findOneByIdOffice(officeId: string) {
         return this.officeRepository.findOneBy({ officeId });
@@ -37,7 +37,9 @@ export class OfficeServices {
     
 
     async remove(officeId: string) {
-        await this.officeRepository.delete(officeId);
+        let office = await this.findOne(officeId);
+            office.deleted = true
+        return await this.officeRepository.save(office)
     }
 
     createOffice(res: any) {
@@ -50,7 +52,7 @@ export class OfficeServices {
   }
 
     async findOfficeByBaseName(baseName : string) {
-        return await this.officeRepository.findOneBy({baseName});
+        return await this.officeRepository.findOneBy({baseName,deleted:false});
     }
 
     async updateOfficeByStaffUser(id: string,res:OfficeDTO){

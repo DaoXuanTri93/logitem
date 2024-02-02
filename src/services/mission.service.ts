@@ -34,7 +34,7 @@ export class MissionServices {
 
     findAllMissonNowByUser(userName, date) {
         return this.missionRepository.createQueryBuilder("missionRegistation")
-            .where({ userName: userName})
+            .where({ userName: userName })
             .andWhere("missionRegistation.endDay >=:date", { date: date })
             .getMany()
     }
@@ -42,7 +42,7 @@ export class MissionServices {
     findAllMissonByUser(userName, date) {
         return this.missionRepository.createQueryBuilder("missionRegistation")
             .where({ userName: userName })
-            .andWhere("missionRegistation.endDay >=:date and missionRegistation.startDay <= :date", {date: date })
+            .andWhere("missionRegistation.endDay >=:date and missionRegistation.startDay <= :date", { date: date })
             .andWhere("missionRegistation.statusMission = 'APPROVED'")
             .getMany()
     }
@@ -51,16 +51,25 @@ export class MissionServices {
         if (staff.userAccount.role == Role.Admin) {
             return await this.missionRepository.find();
         }
-        return await this.missionRepository.findBy({staff:{affiliatedOffice:{officeId:staff.affiliatedOffice.officeId}}});
+        return await this.missionRepository.findBy({ staff: { affiliatedOffice: { officeId: staff.affiliatedOffice.officeId } } });
     }
 
     async checkMission(req: any, data: any) {
         let id = req.user.sub;
+        let datetime = new Date(new Date().toLocaleString())
+        let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString() + ":" + datetime.getSeconds().toString();
+        let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        let date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate();
+        let year = datetime.getFullYear();
+        let today = year + '/' + month + '/' + date
         let staff = await this.staffServices.findOneByIdUser(id)
         let missionRegistation = new MissionRegistation();
-        if(data.startDay > data.endDay){
+        if (data.startDay > data.endDay) {
             throw new HttpException("Start time after end time ", HttpStatus.BAD_REQUEST)
-           }
+        }
+        if (data.startDay <= today) {
+            throw new HttpException("Start time after tomorrow ", HttpStatus.BAD_REQUEST)
+        }
         missionRegistation.staff = staff
         missionRegistation.startDay = data.startDay
         missionRegistation.endDay = data.endDay
@@ -71,25 +80,24 @@ export class MissionServices {
     }
 
     async editMission(id: string, data: any) {
-       let missionRegistation = await this.findOne(id)
-       if(data.startDay > data.endDay){                         
-        throw new HttpException("Start time after end time", HttpStatus.BAD_REQUEST)
-       }
+        let missionRegistation = await this.findOne(id)
+        if (data.startDay > data.endDay) {
+            throw new HttpException("Start time after end time", HttpStatus.BAD_REQUEST)
+        }
+        missionRegistation.statusMission == Status.APPROVED ? missionRegistation.statusMission = Status.PENDING : null
 
-       missionRegistation.statusMission == Status.APPROVED ? missionRegistation.statusMission = Status.PENDING: null
-
-       missionRegistation.startDay = data.startDay
-       missionRegistation.endDay = data.endDay
-       return await this.missionRepository.save(missionRegistation)
+        missionRegistation.startDay = data.startDay
+        missionRegistation.endDay = data.endDay
+        return await this.missionRepository.save(missionRegistation)
     }
 
     async cancelMission(id: string) {
         let missionRegistation = await this.findOne(id)
-        if(missionRegistation == null){
+        if (missionRegistation == null) {
             throw new HttpException("Work schedule does not exist ", HttpStatus.BAD_REQUEST)
         }
         // if(missionRegistation.statusMission == Status.WAITINGCONFIRM){
-            return await this.remove(id);
+        return await this.remove(id);
         // }
         // if(missionRegistation.statusMission == Status.CANCELLING || missionRegistation.statusMission == Status.PENDING){
         //     if(missionRegistation.statusMission == Status.PENDING){
@@ -97,15 +105,15 @@ export class MissionServices {
         //         missionRegistation.startDay = logmission.startDay
         //         missionRegistation.endDay = logmission.endDay
         //     }
-           
+
         //     missionRegistation.statusMission = Status.APPROVED
-          
+
         //     return await this.missionRepository.save(missionRegistation)
         // }
         // missionRegistation.statusMission = Status.CANCELLING
         // return await this.missionRepository.save(missionRegistation)
-     }
-     async updateSatusMission(id: string, data: any) {
+    }
+    async updateSatusMission(id: string, data: any) {
         let missionRegistation = await this.findOne(id)
            let permission =await this.staffServices.findPermissionByStaffId(id)
            let check =false;
@@ -121,6 +129,6 @@ export class MissionServices {
         missionRegistation.statusMission = data.status
         return await this.missionRepository.save(missionRegistation)
     }
-    
+
 
 }
