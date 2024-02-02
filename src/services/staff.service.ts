@@ -73,8 +73,6 @@ export class StaffServices {
             }
             listDriver.push(driver)
         })
-        console.log(listDriver);
-
         return listDriver
     }
 

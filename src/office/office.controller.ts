@@ -25,21 +25,17 @@ export class OfficeController {
         else {
             throw new HttpException("Office name already exists", HttpStatus.BAD_REQUEST)
         }
-
     }
 
     @UseGuards(AuthGuard)
     @Put(':id')
     async updateOffice(@Param('id') id: string, @Body() res: OfficeDTO) {
         let office = await this.officeServices.findOfficeByBaseName(res.baseName)
-        if (office != null) {
+        if((office != null && office.officeId == id)||office == null){
             return this.officeServices.updateOfficebyid(id, res)
-        }
-        else {
-            throw new HttpException("Office name already exists", HttpStatus.BAD_REQUEST)
-        }
-
-    }
+        }else{
+            throw new HttpException("Office name already exists",HttpStatus.BAD_REQUEST)
+    }}
 
     @UseGuards(AuthGuard)
     @Get("info")

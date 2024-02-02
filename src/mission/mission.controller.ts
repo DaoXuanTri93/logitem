@@ -66,8 +66,8 @@ export class MissionController {
 
     @UseGuards(AuthGuard)
     @Post('approval/:id')
-    async approvalMission(@Param('id') id: string, @Body() data: any) {
-        let mission = await this.missionServices.updateSatusMission(id, data)
+    async approvalMission(@Param('id') id: string, @Body() data: any,@Request() req ) {
+        let mission = await this.missionServices.updateSatusMission(id, data,req)
         return mission
     }
 

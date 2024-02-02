@@ -27,5 +27,11 @@ export class EnterDistanceController {
         const userNameId = req.user.sub;
         return (await this.enterDistanceService.findOneEnterDistance(userNameId)).convertEnterDistance();
     }
+    @UseGuards(AuthGuard)
+    @Post('findByIdEnterDistance')
+    async findByIdEnterDistance(@Body() req) {
+        return (await this.enterDistanceService.findByIdEnterDistance(req)).converDistanceImage();
+    }
+
 
 }
