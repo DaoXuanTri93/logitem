@@ -4,6 +4,7 @@ import { AuthGuard } from "src/auth/authGuard";
 import { AuthorGuard } from "src/auth/authorGuard";
 import { Roles } from "src/auth/roles.decorator";
 import { Role } from "src/enum/role.enum";
+import { log } from "console";
 
 
 @Controller('stampApprovalController')
@@ -25,6 +26,8 @@ export class StampApprovalController {
     @UseGuards(AuthGuard)
     @Post()
     async registerMission(@Body() data:any,@Request() req) {
+        console.log(data);
+        
        return await this.stampApprovalService.register(req,data)
     }
 
@@ -39,6 +42,8 @@ export class StampApprovalController {
     @Roles(Role.Driver)
     @Get("driver")
     async findAllByDriver(@Request() req){
+        console.log(req);
+        
         return (await this.stampApprovalService.findAllByDriver(req)).map((e) => e.convertStampApproval());
     }
 

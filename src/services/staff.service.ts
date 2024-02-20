@@ -25,12 +25,15 @@ export class StaffServices {
     }
 
     async findPermissionByStaffId(id: string) {
+        console.log("staffID");
+        console.log(await this.permissionRepository.findOneBy({ staff: { staffId: id } }));
         return await this.permissionRepository.findOneBy({ staff: { staffId: id } });
     }
 
     async findAllByStaff(req: any) {
         let id = req.user.sub;
         let staff = await this.findOneByIdUser(id)
+
         if (staff.userAccount.role == Role.Admin) {
             return await this.staffRepository.find();
         }
@@ -39,7 +42,7 @@ export class StaffServices {
 
     async findAllByDriver(req: any, idDriver: string) {
         // let id = req.user.sub;
-        let staff = await this.findOneByIdUser(idDriver)
+        let staff = await this.findOne(idDriver)
         if (staff.userAccount.role == Role.Admin) {
             return await this.staffRepository.find();
         }
@@ -129,14 +132,16 @@ export class StaffServices {
 
 
     async settingPermission(req: any, idDriver: string) {
-        let staff = await this.findOneByIdUser(idDriver)
-        let permission = await this.permissionRepository.findOneBy({ staff: { staffId: idDriver } })
+        let staff = await this.findOne(idDriver)
         console.log(req);
+        
+        let permission = await this.permissionRepository.findOneBy({ staff: { staffId: idDriver } })
         
         let editUsers: any = []
         let approveUsers: any = []
         if (permission == null) {
             permission = new Permission()
+    
         }
         let dataEdit = req.dataEdit
         let dataApprove = req.dataApprove
@@ -156,9 +161,10 @@ export class StaffServices {
         if (req.edit == true && req.multiedit == false) {
             permission.editUsers = editUsers
         }
+        
         permission.authoritiesApproved = req.approve
         permission.edit = req.edit
-        permission.multiEdit = req.multiEdit
+        permission.multiEdit = req.multiedit
         permission.multiapproved = req.multiapprove
         permission.staff = staff
         return await this.permissionRepository.save(permission);

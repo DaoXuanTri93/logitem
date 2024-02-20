@@ -89,7 +89,8 @@ export class StaffController {
     @UseGuards(AuthGuard)
     @Get("permission/:id")
     async getStaff(@Request() req, @Param('id') id: string,) {
-        return await this.staffServices.findPermissionByStaffId(id) != null ? (await this.staffServices.findPermissionByStaffId(id)).converDriverToDTO() : null;
+    
+        return await this.staffServices.findPermissionByStaffId(id) != null ? (await this.staffServices.findPermissionByStaffId(id)).converDriverToDTO() : {};
     }
 
     @UseGuards(AuthGuard)

@@ -96,25 +96,10 @@ export class MissionServices {
         if (missionRegistation == null) {
             throw new HttpException("Work schedule does not exist ", HttpStatus.BAD_REQUEST)
         }
-        // if(missionRegistation.statusMission == Status.WAITINGCONFIRM){
         return await this.remove(id);
-        // }
-        // if(missionRegistation.statusMission == Status.CANCELLING || missionRegistation.statusMission == Status.PENDING){
-        //     if(missionRegistation.statusMission == Status.PENDING){
-        //         let logmission = await this.logMissionServices.findOneByMissioinId(id)
-        //         missionRegistation.startDay = logmission.startDay
-        //         missionRegistation.endDay = logmission.endDay
-        //     }
 
-        //     missionRegistation.statusMission = Status.APPROVED
-
-        //     return await this.missionRepository.save(missionRegistation)
-        // }
-        // missionRegistation.statusMission = Status.CANCELLING
-        // return await this.missionRepository.save(missionRegistation)
     }
     async updateSatusMission(id: string, data: any, req: any) {
-        console.log(data);
         let idsales = req.user.sub;
         let check = false;
         let staff = await this.staffServices.findOneByIdUser(idsales)
@@ -128,11 +113,9 @@ export class MissionServices {
             permission.approveUsers.map((e) => { if (e == missionRegistation.staff.staffId) check = true })
         }
         if (missionRegistation == null) {
-            console.log("1");
             throw new HttpException("Work schedule does not exist", HttpStatus.BAD_REQUEST)
         }
         if (check == false) {
-            console.log("2");
             throw new HttpException("Account doesn't approve", HttpStatus.BAD_REQUEST)
         }
         missionRegistation.statusMission = data.status

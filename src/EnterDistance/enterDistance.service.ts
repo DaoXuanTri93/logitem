@@ -33,10 +33,10 @@ export class EnterDistanceService {
         let date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate();
         let year = datetime.getFullYear();
         let today = year + '/' + month + '/' + date
-        var checkXe = await this.findOneEnterDistance(userNameId)
+        var checkDriver = await this.findOneEnterDistance(userNameId)
 
         
-        if (checkXe == null) {
+        if (checkDriver == null) {
             var data = {
                 ...body,
                 "userNameId": userNameId,
@@ -45,11 +45,11 @@ export class EnterDistanceService {
              this.respository.save(data)
             return HttpStatus.OK;
         }
-        checkXe.startingPoint = body.startingPoint
-        checkXe.firstKilometerPhoto = body.firstKilometerPhoto
-        checkXe.userNameId = userNameId;
-        checkXe.runningDay = today;
-        if(checkXe.endPoint != null ){
+        checkDriver.startingPoint = body.startingPoint
+        checkDriver.firstKilometerPhoto = body.firstKilometerPhoto
+        checkDriver.userNameId = userNameId;
+        checkDriver.runningDay = today;
+        if(checkDriver.endPoint != null ){
             let staff = await this.staffServices.findOneByIdUser(userNameId)
             let timekeeping = await this.timekeepingServices.findOneByUserName(staff.userName, today)
             if (timekeeping == null) {
@@ -58,11 +58,11 @@ export class EnterDistanceService {
                 timekeeping.userName = staff.userName;   
                 timekeeping.dayTimeKeeping = today;
             }
-            checkXe.totalDistance = checkXe.endPoint - checkXe.startingPoint
-            timekeeping.totalDistance =  checkXe.totalDistance
+            checkDriver.totalDistance = checkDriver.endPoint - checkDriver.startingPoint
+            timekeeping.totalDistance =  checkDriver.totalDistance
             this.timekeepingServices.save(timekeeping)
         }
-        this.respository.save(checkXe)
+        this.respository.save(checkDriver)
         return HttpStatus.OK;
     }
 
@@ -73,7 +73,7 @@ export class EnterDistanceService {
         let year = datetime.getFullYear();
         let today = year + '/' + month + '/' + date
         let staff = await this.staffServices.findOneByIdUser(userNameId)
-        var checkXe = await this.findOneEnterDistance(userNameId)
+        var checkDriver = await this.findOneEnterDistance(userNameId)
         let timekeeping = await this.timekeepingServices.findOneByUserName(staff.userName, today)
 
         if (timekeeping == null) {
@@ -83,19 +83,19 @@ export class EnterDistanceService {
             timekeeping.dayTimeKeeping = today;
         }
         
-        if ( checkXe == null) {
+        if ( checkDriver == null) {
             throw new HttpException("StartPoint cannot null",HttpStatus.BAD_REQUEST);
         }
         
-        if (body.endPoint < checkXe.startingPoint) {
+        if (body.endPoint < checkDriver.startingPoint) {
             throw new HttpException("EndPoint cannot be smaller than StartPoint",HttpStatus.BAD_REQUEST);
         }
-        checkXe.endPoint = body.endPoint
-        checkXe.lastKilometerPhoto = body.lastKilometerPhoto
-        checkXe.totalDistance = checkXe.endPoint - checkXe.startingPoint
-        timekeeping.totalDistance =  checkXe.totalDistance
+        checkDriver.endPoint = body.endPoint
+        checkDriver.lastKilometerPhoto = body.lastKilometerPhoto
+        checkDriver.totalDistance = checkDriver.endPoint - checkDriver.startingPoint
+        timekeeping.totalDistance =  checkDriver.totalDistance
         this.timekeepingServices.save(timekeeping)
-        this.respository.save(checkXe);
+        this.respository.save(checkDriver);
         return HttpStatus.OK;
     }
 
