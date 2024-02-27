@@ -25,8 +25,6 @@ export class StaffServices {
     }
 
     async findPermissionByStaffId(id: string) {
-        console.log("staffID");
-        console.log(await this.permissionRepository.findOneBy({ staff: { staffId: id } }));
         return await this.permissionRepository.findOneBy({ staff: { staffId: id } });
     }
 
@@ -132,9 +130,7 @@ export class StaffServices {
 
 
     async settingPermission(req: any, idDriver: string) {
-        let staff = await this.findOne(idDriver)
-        console.log(req);
-        
+        let staff = await this.findOne(idDriver)  
         let permission = await this.permissionRepository.findOneBy({ staff: { staffId: idDriver } })
         
         let editUsers: any = []
