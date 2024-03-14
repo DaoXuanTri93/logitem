@@ -14,6 +14,7 @@ import { OfficeModule } from './office/office.module';
 
 import { EnterDistanceModule } from './EnterDistance/enterDistance.module';
 import { StampApprovalModule } from './stampApproval/stampApproval.module';
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     UserModule,
@@ -24,13 +25,14 @@ import { StampApprovalModule } from './stampApproval/stampApproval.module';
     StampApprovalModule,
     OfficeModule,
     StaffModule,
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mssql',
-      host: '192.168.249.81',
-      port: 1433,
-      username: 'sa',
-      password: '123456a@',
-      database: 'logitem',
+      host: process.env.HOST_DB,
+      port: Number(process.env.PORT_DB),
+      username: process.env.USERNAME_DB,
+      password: process.env.PASSWORD_DB,
+      database: process.env.DATABASE_DB,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
       extra: {

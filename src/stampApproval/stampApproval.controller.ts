@@ -4,7 +4,6 @@ import { AuthGuard } from "src/auth/authGuard";
 import { AuthorGuard } from "src/auth/authorGuard";
 import { Roles } from "src/auth/roles.decorator";
 import { Role } from "src/enum/role.enum";
-import { log } from "console";
 
 
 @Controller('stampApprovalController')

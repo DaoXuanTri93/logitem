@@ -6,7 +6,6 @@ import { Role } from "src/enum/role.enum";
 import { Permission } from "src/models/permission.entity";
 import { Users } from "src/models/users.entity";
 import { DriverPerDTO } from "src/staff/driverPermission.dto";
-import { log } from "console";
 import { UserServices } from "./user.service";
 
 
