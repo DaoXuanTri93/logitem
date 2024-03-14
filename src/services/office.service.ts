@@ -16,7 +16,7 @@ export class OfficeServices {
     ) { }
 
     findAll() {
-        return this.officeRepository.find();
+        return this.officeRepository.find({where : {deleted : false}});
     }
 
     findOne(officeId: string) {

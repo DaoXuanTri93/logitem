@@ -42,7 +42,8 @@ export class MissionController {
         let staff = await this.staffServices.findOneByIdUser(id)
         
         if(staff == null){
-            throw new HttpException("The account has not been verified by staff",HttpStatus.BAD_REQUEST)
+            return [];
+            // throw new HttpException("The account has not been verified by staff",HttpStatus.BAD_REQUEST)
         }
         let mission = await this.missionServices.findOneByStaff(staff)
             

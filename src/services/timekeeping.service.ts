@@ -204,8 +204,9 @@ export class TimekeepingServices {
     async findAllByStaff(req: any) {
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
-        if (staff == null) {
-            throw new HttpException("Account has not been verified", HttpStatus.BAD_REQUEST)
+        if (!staff) {
+            return [];
+            // throw new HttpException("Account has not been verified", HttpStatus.BAD_REQUEST)
         }
         if (staff.userAccount.role == Role.Admin) {
             return await this.findAllByDriver();

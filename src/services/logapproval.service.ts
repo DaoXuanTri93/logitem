@@ -36,6 +36,9 @@ export class LogApprovalServices {
     async findAllOfficeByStaff(req: any) {
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
+        if(!staff){
+            return [];
+        }
         if (staff.userAccount.role == Role.Admin) {
             return await (await this.findAll());
         }

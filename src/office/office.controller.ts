@@ -4,6 +4,7 @@ import { AuthGuard } from 'src/auth/authGuard';
 import { OfficeServices } from 'src/services/office.service';
 import { OfficeDTO } from './office.dto';
 import { StaffServices } from 'src/services/staff.service';
+import { Role } from 'src/enum/role.enum';
 
 @Controller('office')
 export class OfficeController {
@@ -19,6 +20,7 @@ export class OfficeController {
     @Post()
     async createOffice(@Body() res: any) {
         let office = await this.officeServices.findOfficeByBaseName(res.baseName)
+        console.log(office);
         if (office == null) {
             return this.officeServices.createOffice(res)
         }                                                                                       
@@ -41,14 +43,19 @@ export class OfficeController {
     @Get("info")
     async getOfficeByUser(@Request() req) {
         let id = req.user.sub;
+        if(req.user.role == Role.Admin){
+            return await this.getAllOffice();
+        }
         let staff = await this.staffServices.findOneByIdUser(id)
 
         if (staff == null) {
-            throw new HttpException("The account has not been verified by staff", HttpStatus.BAD_REQUEST)
+            return [];
+            // throw new HttpException("The account has not been verified by staff", HttpStatus.BAD_REQUEST)
         }
         let office = await this.officeServices.findOneByIdStaff(staff)
         if (office == null) {
-            throw new HttpException("The account does not belong to any style", HttpStatus.BAD_REQUEST)
+            return [];
+            // throw new HttpException("The account does not belong to any style", HttpStatus.BAD_REQUEST)
         }
         return office.map((e) => e.convertOfficeDTO())
     }

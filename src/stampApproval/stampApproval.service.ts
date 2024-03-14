@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { ExceptionsHandler } from "@nestjs/core/exceptions/exceptions-handler";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Role } from "src/enum/role.enum";
 import { Status } from "src/enum/status.enum";
@@ -40,10 +41,12 @@ export class StampApprovalService {
     async findAllByStaff(req: any) {
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
+        if(!staff){
+            return [];
+        }
         if (staff.userAccount.role == Role.Admin) {
             return await this.repository.find();
         }
-
         return await this.findAllByOfficeName(staff.affiliatedOffice.baseName)
     }
 

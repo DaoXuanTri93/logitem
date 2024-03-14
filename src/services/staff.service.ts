@@ -29,10 +29,12 @@ export class StaffServices {
 
     async findAllByStaff(req: any) {
         let id = req.user.sub;
-        let staff = await this.findOneByIdUser(id)
-
-        if (staff.userAccount.role == Role.Admin) {
+        if (req.user.role == Role.Admin) {
             return await this.staffRepository.find();
+        }
+        let staff = await this.findOneByIdUser(id)
+        if(!staff){
+            return [];
         }
         return await this.findAllByOfficeName(staff.affiliatedOffice.baseName)
     }
