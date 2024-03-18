@@ -35,13 +35,14 @@ export class LogApprovalServices {
 
     async findAllOfficeByStaff(req: any) {
         let id = req.user.sub;
+        if (req.user.role == Role.Admin) {
+            return await (await this.findAll());
+        }
         let staff = await this.staffServices.findOneByIdUser(id)
         if(!staff){
             return [];
         }
-        if (staff.userAccount.role == Role.Admin) {
-            return await (await this.findAll());
-        }
+        
         
         return await this.findAllByOfficeName(staff.affiliatedOffice.baseName);
     }

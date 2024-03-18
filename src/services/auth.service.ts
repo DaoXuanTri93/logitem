@@ -22,7 +22,6 @@ export class AuthService {
       throw new HttpException('Password is not correct, please try again', HttpStatus.NON_AUTHORITATIVE_INFORMATION);
     }
 
-
     if (signInDto.isWeb) {
       if (user.role != "DRIVER") {
         const payload = { sub: user.id, username: user.username, password: user.password, MAC: user.MAC, role: user.role };
@@ -38,9 +37,9 @@ export class AuthService {
           throw new HttpException('The account is not authenticated on this device', HttpStatus.NON_AUTHORITATIVE_INFORMATION);
         }
       }
-
       if (user.role == "DRIVER") {
         user.MAC = signInDto.MAC;
+        console.log(user.MAC);
         this.usersService.updateUser(user);
         const payload = { sub: user.id, username: user.username, role: user.role };
         const jwt = await this.jwtService.signAsync(payload);

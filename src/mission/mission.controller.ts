@@ -40,10 +40,8 @@ export class MissionController {
     async getAllMission(@Request() req) {
         let id = req.user.sub;
         let staff = await this.staffServices.findOneByIdUser(id)
-        
         if(staff == null){
             return [];
-            // throw new HttpException("The account has not been verified by staff",HttpStatus.BAD_REQUEST)
         }
         let mission = await this.missionServices.findOneByStaff(staff)
             

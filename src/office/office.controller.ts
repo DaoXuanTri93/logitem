@@ -20,7 +20,6 @@ export class OfficeController {
     @Post()
     async createOffice(@Body() res: any) {
         let office = await this.officeServices.findOfficeByBaseName(res.baseName)
-        console.log(office);
         if (office == null) {
             return this.officeServices.createOffice(res)
         }                                                                                       

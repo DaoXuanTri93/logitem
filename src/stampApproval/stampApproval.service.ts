@@ -40,12 +40,13 @@ export class StampApprovalService {
 
     async findAllByStaff(req: any) {
         let id = req.user.sub;
+      
+        if (req.user.role == Role.Admin) {
+            return await this.repository.find();
+        }
         let staff = await this.staffServices.findOneByIdUser(id)
         if(!staff){
             return [];
-        }
-        if (staff.userAccount.role == Role.Admin) {
-            return await this.repository.find();
         }
         return await this.findAllByOfficeName(staff.affiliatedOffice.baseName)
     }
@@ -93,8 +94,8 @@ export class StampApprovalService {
 
     async approveData(id: string, data: any, req: any) {
         let iduser = req.user.sub;
+        // chua on
         let staff = await this.staffServices.findOneByIdUser(iduser)
-
         let datetime = new Date(new Date().toLocaleString())
         let time = datetime.getHours().toString() + ":" + datetime.getMinutes().toString()+ ":" + datetime.getSeconds().toString();
         let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
