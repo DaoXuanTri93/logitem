@@ -39,7 +39,6 @@ export class AuthService {
       }
       if (user.role == "DRIVER") {
         user.MAC = signInDto.MAC;
-        console.log(user.MAC);
         this.usersService.updateUser(user);
         const payload = { sub: user.id, username: user.username, role: user.role };
         const jwt = await this.jwtService.signAsync(payload);

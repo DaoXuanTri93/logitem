@@ -38,11 +38,19 @@ export class UserServices {
       }
 
      async updateUserbyid(id:string,res:UserDTO) {
+        let checkuser = await this.findOneByUserName(res.username)
+        if(checkuser!= null){
+            throw new HttpException("Account name already exists",HttpStatus.BAD_REQUEST)
+        }
             const user = await this.usersRepository.update(id,res);
             return user
       }
 
       async updateUserbyStaffUser(id:string,res:any) {
+        let checkuser = await this.findOneByUserName(res.username)
+        if(checkuser!= null){
+            throw new HttpException("Account name already exists",HttpStatus.BAD_REQUEST)
+        }
         const user = await this.usersRepository.update(id,res);
         return user
     }
