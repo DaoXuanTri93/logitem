@@ -25,7 +25,7 @@ import { ConfigModule } from '@nestjs/config';
     StampApprovalModule,
     OfficeModule,
     StaffModule,
-    ConfigModule.forRoot({isGlobal : true, envFilePath: 'env_example/.env'}),
+    ConfigModule.forRoot({isGlobal : true, envFilePath: 'env_example/ex.env'}),
     TypeOrmModule.forRoot({
       type: 'mssql',
       host: process.env.HOST_DB,
